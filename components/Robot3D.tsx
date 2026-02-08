@@ -8,7 +8,7 @@ interface CuteRobotProps {
 
 export default function CuteRobot({ lookDirection }: CuteRobotProps) {
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    const animationRef = useRef<number>();
+    const animationRef = useRef<number | undefined>(undefined);
     const blinkRef = useRef(0);
 
     useEffect(() => {

@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { Suspense, useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { avatarOptions } from '@/lib/game-logic';
 
-export default function PlayerJoinPage() {
+function PlayerJoinContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const code = searchParams.get('code');
@@ -79,7 +79,7 @@ export default function PlayerJoinPage() {
                         </svg>
                     </button>
                     <div className="font-bold text-[#264653] text-lg">
-                        建立角色 ({step}/3)
+                        你是誰 ({step}/3)
                     </div>
                     <div className="w-10"></div> {/* Spacer */}
                 </div>
@@ -100,8 +100,8 @@ export default function PlayerJoinPage() {
                     {/* Step 1: Username */}
                     {step === 1 && (
                         <div className="flex flex-col h-full">
-                            <h2 className="text-3xl font-black text-[#264653] mb-2 text-center">叫什麼名字？</h2>
-                            <p className="text-gray-400 text-center mb-8">讓大家認識你！</p>
+                            <h2 className="text-3xl font-black text-[#264653] mb-2 text-center">取一個有趣好笑的名字吧</h2>
+                            <p className="text-gray-400 text-center mb-8">不夠好笑不給過</p>
 
                             <div className="flex-grow flex items-center justify-center">
                                 <input
@@ -160,7 +160,7 @@ export default function PlayerJoinPage() {
                     {step === 3 && (
                         <div className="flex flex-col h-full">
                             <h2 className="text-3xl font-black text-[#264653] mb-2 text-center">想說的話？</h2>
-                            <p className="text-gray-400 text-center mb-8">（選填）給壽星的一句話</p>
+                            <p className="text-gray-400 text-center mb-8">（選填）給大家的一句話</p>
 
                             <div className="flex-grow">
                                 <div className="bg-gray-50 rounded-3xl p-6 text-center mb-6">
@@ -189,5 +189,17 @@ export default function PlayerJoinPage() {
                 </div>
             </div>
         </div>
+    );
+}
+
+export default function PlayerJoinPage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen bg-[#F0FDF4] flex items-center justify-center">
+                <div className="text-[#264653] text-xl font-bold">載入中...</div>
+            </div>
+        }>
+            <PlayerJoinContent />
+        </Suspense>
     );
 }

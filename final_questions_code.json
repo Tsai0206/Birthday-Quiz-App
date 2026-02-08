@@ -1,0 +1,380 @@
+[
+    // ----------------------------------------------------
+    // 第一階段：基本送分題 (Basics & Origins)
+    // ----------------------------------------------------
+    {
+        "id": 1,
+        "title": "身世之謎",
+        "description": "Marvin 爸爸是台灣人、媽媽是大陸人，但他人生中到底在哪個城市「生活最久」？",
+        "options": [
+            "東莞 (China)",
+            "彰化 (Taiwan)",
+            "台南 (Taiwan)",
+            "Baltimore (USA)"
+        ],
+        "correctAnswer": 1 // 彰化
+    },
+    {
+        "id": 2,
+        "title": "眼力大考驗",
+        "description": "Marvin 就讀的科系全名是？(請仔細看拼字)",
+        "options": [
+            "Biomedical Engine-earring",
+            "Biochemical Engineering",
+            "Biomedical Engineering",
+            "Biological Imagineering"
+        ],
+        "correctAnswer": 2
+    },
+    {
+        "id": 3,
+        "title": "舞林高手",
+        "description": "Marvin 雖然是工程師，但也是舞棍。請問他主修的舞風是？",
+        "options": [
+            "廣場舞 (Square Dancing)",
+            "Hip Hop (嘻哈)",
+            "High Heels (高跟鞋舞)",
+            "Popping (機械舞)"
+        ],
+        "correctAnswer": 1
+    },
+    {
+        "id": 4,
+        "title": "明星臉",
+        "description": "Marvin 照鏡子時，真心覺得自己長得像哪位藝人？",
+        "options": [
+            "許光漢",
+            "陶喆",
+            "趙宇凡",
+            "兩津勘吉"
+        ],
+        "correctAnswer": 1
+    },
+    {
+        "id": 5,
+        "title": "穿搭哲學",
+        "description": "Marvin 的穿搭核心理念是什麼？",
+        "options": [
+            "緊身衣 (Skinny)",
+            "Oversize (穿得像布袋)",
+            "8+9 (社會搖風格)",
+            "裸體主義 (Nudist)"
+        ],
+        "correctAnswer": 1
+    },
+    // ----------------------------------------------------
+    // 第二階段：生活習慣與技能 (Traits & Skills)
+    // ----------------------------------------------------
+    {
+        "id": 6,
+        "title": "睡眠時間",
+        "description": "根據統計，Marvin 平均都在幾點「入睡」？",
+        "options": [
+            "10:00 PM - 12:00 AM",
+            "12:00 AM - 2:00 AM",
+            "2:00 AM - 4:00 AM",
+            "4:00 AM - 6:00 AM"
+        ],
+        "correctAnswer": 2
+    },
+    {
+        "id": 7,
+        "title": "廚神降臨",
+        "description": "雖然常吃外食，但 Marvin 其實會自己煮飯。他的拿手料理是？",
+        "options": [
+            "滿漢全席",
+            "泡麵加蛋",
+            "馬鈴薯類料理 (Potato Dishes)",
+            "黑暗料理 (會毒死人)"
+        ],
+        "correctAnswer": 2
+    },
+    {
+        "id": 8,
+        "title": "飲料大抉擇",
+        "description": "雖然身為台灣人，但 Marvin 最愛的飲料其實是？",
+        "options": [
+            "珍珠奶茶",
+            "木瓜牛奶",
+            "可口可樂 (Coke)",
+            "烏龍茶"
+        ],
+        "correctAnswer": 2
+    },
+    {
+        "id": 9,
+        "title": "遊戲成癮",
+        "description": "Marvin 在哪款遊戲上課金最多？",
+        "options": [
+            "原神 (Genshin Impact)",
+            "英雄聯盟 (League of Legends)",
+            "特戰英豪 (Valorant)",
+            "貪食蛇"
+        ],
+        "correctAnswer": 2
+    },
+    {
+        "id": 10,
+        "title": "地雷區",
+        "description": "遇到什麼事會讓 Marvin 瞬間在心裡暴怒？",
+        "options": [
+            "網路太慢",
+            "Code 有 Bug 解不掉",
+            "朋友遲到一小時",
+            "事情跟預期計畫不一樣"
+        ],
+        "correctAnswer": 3
+    },
+    // ----------------------------------------------------
+    // 第三階段：腦洞與消費 (Weird Flexes)
+    // ----------------------------------------------------
+    {
+        "id": 11,
+        "title": "超市技能",
+        "description": "一進超市，Marvin 就會觸發什麼被動技能？",
+        "options": [
+            "斤斤計較",
+            "倉鼠囤積症 (把冰箱塞爆)",
+            "試吃大隊",
+            "選擇困難症"
+        ],
+        "correctAnswer": 1
+    },
+    {
+        "id": 12,
+        "title": "AI 之路",
+        "description": "為了跟 AI 聊天，Marvin 曾經做過什麼瘋狂事？",
+        "options": [
+            "跟 ChatGPT 求婚",
+            "訂閱一年份 API (雖然很少用)",
+            "把自己的聲音換成 AI",
+            "寫了一個 AI 來幫自己寫作業"
+        ],
+        "correctAnswer": 1
+    },
+    {
+        "id": 13,
+        "title": "世界末日",
+        "description": "如果喪屍爆發，Marvin 會怎麼生存？",
+        "options": [
+            "自告奮勇當隊長 (然後第一個死)",
+            "躲在實驗室開發解藥",
+            "犧牲朋友讓自己活下去",
+            "跟喪屍談判 (Game Theory)"
+        ],
+        "correctAnswer": 3
+    },
+    {
+        "id": 14,
+        "title": "網站製作",
+        "description": "這個生日問答網站，Marvin 用 AI 花了多久做出來？",
+        "options": [
+            "3 個月 (嘔心瀝血)",
+            "30 分鐘 (複製貼上)",
+            "1 個下午",
+            "是偷來的"
+        ],
+        "correctAnswer": 2
+    },
+    {
+        "id": 15,
+        "title": "隱藏技能",
+        "description": "除了街舞，Marvin 還有什麼不為人知的特技？",
+        "options": [
+            "跳女團舞 (Girl Group Dance)",
+            "秒睡 (隨時隨地)",
+            "劈腿 (Can do Splits)",
+            "模仿海綿寶寶"
+        ],
+        "correctAnswer": 2
+    },
+    // ----------------------------------------------------
+    // 第四階段：搞事與爆料 (Roast & Truth)
+    // ----------------------------------------------------
+    {
+        "id": 16,
+        "title": "喝醉後的真面目",
+        "description": "喝醉酒的 Marvin 會變成什麼屬性？(愛面子模式啟動)",
+        "options": [
+            "默默睡覺/裝死",
+            "英文變流利 (Native Speaker)",
+            "脫褲子跑路",
+            "到處認乾爹"
+        ],
+        "correctAnswer": 0
+    },
+    {
+        "id": 17,
+        "title": "謠言終結者",
+        "description": "下列關於 Marvin 的傳聞，哪一個是真的？",
+        "options": [
+            "我其實有三個小孩",
+            "我其實是 Gay",
+            "我其實有 10 雙同樣的襪子",
+            "我曾經休學過"
+        ],
+        "correctAnswer": 2
+    },
+    {
+        "id": 18,
+        "title": "分組報告",
+        "description": "做分組報告時，Marvin 最大的貢獻通常是？",
+        "options": [
+            "負責訂飲料",
+            "負責最後一秒改標題",
+            "負責深呼吸",
+            "Carry 全場 (自以為)"
+        ],
+        "correctAnswer": 1
+    },
+    {
+        "id": 19,
+        "title": "美國生活",
+        "description": "在 Baltimore 生活過後，Marvin 學會的最重要技能是？",
+        "options": [
+            "如何優雅地吃螃蟹",
+            "隨身攜帶防彈衣 (Bulletproof Vest)",
+            "聽懂 Baltimore 腔調",
+            "如何在 0.1 秒內報警"
+        ],
+        "correctAnswer": 1
+    },
+    // ----------------------------------------------------
+    // 第五階段：最終大獎 (Grand Finale)
+    // ----------------------------------------------------
+    {
+        "id": 20,
+        "title": "消費觀 - 衝動購物篇",
+        "description": "Marvin 最近最衝動的一筆「大額消費」是為了什麼？",
+        "options": [
+            "健身房年費",
+            "手遊課金抽老婆",
+            "Matt Rife 脫口秀門票",
+            "AI API 訂閱"
+        ],
+        "correctAnswer": 2
+    },
+    // ----------------------------------------------------
+    // [BONUS] 額外 10 題 (Extra Content for Shuffle)
+    // ----------------------------------------------------
+    {
+        "id": 21,
+        "title": "遲到藉口",
+        "description": "Marvin 遲到最常用的藉口通常是？",
+        "options": [
+            "路上塞車 (其實還在床上)",
+            "鬧鐘沒響 (設了10個)",
+            "被外星人綁架",
+            "在想人生大道理"
+        ],
+        "correctAnswer": 0
+    },
+    {
+        "id": 22,
+        "title": "KTV 必點",
+        "description": "去 KTV 時，Marvin 絕對會唱哪首歌來「毀掉全場」？",
+        "options": [
+            "死了都要愛",
+            "周杰倫的 Rap (聽不懂)",
+            "兒歌三百首",
+            "各種走音的情歌"
+        ],
+        "correctAnswer": 1
+    },
+    {
+        "id": 23,
+        "title": "網路搜尋",
+        "description": "如果您偷看 Marvin 的 Google 搜尋紀錄，最可能發現什麼？",
+        "options": [
+            "如何一夕致富",
+            "脫髮怎麼辦",
+            "為什麼大家都比我笨",
+            "附近哪裡有賣鹹酥雞"
+        ],
+        "correctAnswer": 3
+    },
+    {
+        "id": 24,
+        "title": "恐怖片反應",
+        "description": "看恐怖片時，Marvin 的反應通常是？",
+        "options": [
+            "全程遮眼 (從指縫看)",
+            "大叫嚇別人",
+            "冷靜分析特效太假",
+            "直接睡著"
+        ],
+        "correctAnswer": 0
+    },
+    {
+        "id": 25,
+        "title": "地獄料理",
+        "description": "如果 Marvin 要做一道菜來「毒害」室友，他會選什麼？",
+        "options": [
+            "微波爐炸彈",
+            "暗黑咖哩 (加巧克力)",
+            "沒熟的雞肉",
+            "過期三年的泡麵"
+        ],
+        "correctAnswer": 1
+    },
+    {
+        "id": 26,
+        "title": "各種口頭禪",
+        "description": "Marvin 在寫 Code 時最常碎碎念的一句話是？",
+        "options": [
+            "Why??",
+            "它壞掉了 (It's broken)",
+            "我是智障 (I'm an idiot)",
+            "靠邀 (God damn it)"
+        ],
+        "correctAnswer": 0
+    },
+    {
+        "id": 27,
+        "title": "拍照姿勢",
+        "description": "Marvin 拍照時最愛用的尷尬姿勢是？",
+        "options": [
+            "比YA (萬年不變)",
+            "假裝看遠方",
+            "遮臉裝酷",
+            "尷尬微笑 (Awkward Smile)"
+        ],
+        "correctAnswer": 3
+    },
+    {
+        "id": 28,
+        "title": "如果變成女生",
+        "description": "如果 Marvin 一覺醒來變成女生，第一件事會做什麼？",
+        "options": [
+            "去女湯 (洗澡)",
+            "照鏡子自戀一整天",
+            "開直播賺錢",
+            "尖叫"
+        ],
+        "correctAnswer": 1
+    },
+    {
+        "id": 29,
+        "title": "最想銷毀的照片",
+        "description": "Marvin 人生中最想銷毀的照片時期是？",
+        "options": [
+            "國中中二照",
+            "高中光頭照",
+            "大一宿營醜照",
+            "現在這張"
+        ],
+        "correctAnswer": 0
+    },
+    {
+        "id": 30,
+        "title": "超能力",
+        "description": "如果可以擁有一種超能力，Marvin 絕對會選？",
+        "options": [
+            "隱形 (偷窺?)",
+            "讀心術 (太可怕)",
+            "瞬間移動 (不想走路)",
+            "長生不老 (繼續熬夜)"
+        ],
+        "correctAnswer": 2
+    }
+]

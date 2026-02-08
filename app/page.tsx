@@ -86,10 +86,10 @@ export default function Home() {
         {/* Logo/Hero Section */}
         <div className="text-center mb-12 animate-slide-up">
           <div className="inline-block bg-white p-6 rounded-3xl shadow-xl mb-6 transform hover:rotate-3 transition-all duration-300">
-            <span className="text-6xl">🎂</span>
+            <span className="text-6xl">🎯</span>
           </div>
-          <h1 className="text-3xl md:text-5xl font-black text-[#264653] mb-2 tracking-tight leading-tight">
-            Do you understand <span className="text-[#E76F51]">Marvin</span> well?
+          <h1 className="text-4xl md:text-6xl font-black text-[#264653] mb-2 tracking-tight leading-tight">
+            <span className="text-[#E76F51]">Marv</span>elous Quiz
           </h1>
           <p className="text-[#264653]/70 text-lg font-medium">
             第一名也沒有獎勵 haha
@@ -102,14 +102,14 @@ export default function Home() {
           {/* Toggle Tabs (Visual only for now) */}
           <div className="flex bg-gray-100 rounded-2xl p-1 mb-8">
             <button className="flex-1 py-3 rounded-xl bg-white text-[#264653] font-bold shadow-sm text-sm">
-              我是玩家
+              玩家
             </button>
             <button
               onClick={handleCreateGame}
               disabled={isCreateLoading}
               className="flex-1 py-3 rounded-xl text-gray-500 font-bold hover:text-[#264653] transition-colors text-sm"
             >
-              我是主持人
+              主持人
             </button>
           </div>
 
@@ -146,7 +146,7 @@ export default function Home() {
 
         {/* Footer */}
         <div className="mt-12 text-center text-[#264653]/40 text-sm font-medium">
-          Powered by Super Super Cute Robot 🤖
+          Powered by Marvin's super insane self-trained AI model 🤖
         </div>
 
       </main>
