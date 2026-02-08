@@ -29,6 +29,23 @@ const getRandomErrorMessage = () => {
     return messages[Math.floor(Math.random() * messages.length)];
 };
 
+// Convert YouTube URL to embed format
+const convertToEmbedUrl = (url: string): string => {
+    // Convert youtu.be/VIDEO_ID to youtube.com/embed/VIDEO_ID
+    const youtuBeMatch = url.match(/youtu\.be\/([^?]+)/);
+    if (youtuBeMatch) {
+        return `https://www.youtube.com/embed/${youtuBeMatch[1]}`;
+    }
+
+    // Already in embed format or standard format
+    const videoIdMatch = url.match(/[?&]v=([^&]+)/);
+    if (videoIdMatch) {
+        return `https://www.youtube.com/embed/${videoIdMatch[1]}`;
+    }
+
+    return url;
+};
+
 export default function PlayerGamePage() {
     const params = useParams();
     const router = useRouter();
@@ -355,18 +372,20 @@ export default function PlayerGamePage() {
                 {shuffledQuestion.isSpecial && shuffledQuestion.videoLinks && (
                     <div className="bg-[#F0FDF4] rounded-xl p-4 mt-4">
                         <p className="text-sm text-gray-600 mb-3 text-center font-bold">Some funny clips</p>
-                        <div className="space-y-2">
+                        <div className="space-y-4">
                             {shuffledQuestion.videoLinks.map((link, index) => (
-                                <button
-                                    key={index}
-                                    onClick={() => {
-                                        navigator.clipboard.writeText(link);
-                                        alert(`影片${index + 1}連結已複製！請到瀏覽器貼上觀看 🎬`);
-                                    }}
-                                    className="w-full bg-[#2A9D8F] text-white font-bold py-2 px-4 rounded-lg hover:bg-[#238276] transition-colors"
-                                >
-                                    📋 影片{index + 1}
-                                </button>
+                                <div key={index} className="w-full">
+                                    <p className="text-xs text-gray-500 mb-2 text-center">影片 {index + 1}</p>
+                                    <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
+                                        <iframe
+                                            src={convertToEmbedUrl(link)}
+                                            className="absolute top-0 left-0 w-full h-full rounded-lg"
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                            allowFullScreen
+                                            title={`Matt Rife Video ${index + 1}`}
+                                        />
+                                    </div>
+                                </div>
                             ))}
                         </div>
                     </div>

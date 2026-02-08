@@ -10,7 +10,7 @@ export const sampleQuestions = [
             "Biomedical Engineering",
             "Biomedical Imagineering"
         ],
-        correctAnswer: 1,
+        correctAnswer: 0,
         timeLimit: 30,
         points: 0
     },
@@ -223,7 +223,7 @@ export const sampleQuestions = [
         options: [
             "Super Horny",
             "Can't stop thinking",
-            "Forever Instagram Reels",
+            "Non-stop Instagram Reels",
             "No special reason"
         ],
         correctAnswer: 1,
