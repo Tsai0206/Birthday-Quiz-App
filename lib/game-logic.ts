@@ -7,7 +7,7 @@ export const sampleQuestions = [
         options: [
             "Biomedical Engineering",
             "Biochemical Engineering",
-            "Biomedical Enginnearing",
+            "Biomedical Enginearing",
             "Biomedical Imagineering"
         ],
         correctAnswer: 0,
@@ -105,6 +105,19 @@ export const sampleQuestions = [
     },
     {
         id: 11,
+        question: "屁屁(我的貓)為甚麼叫"屁屁"",
+        options: [
+            "他小時候屁股特別肥",
+            "他小時候很愛睡在我屁股旁邊",
+            "領養前就叫屁屁了沒有改",
+            "她小時候喜歡被拍屁屁"
+        ],
+        correctAnswer: 1,
+        timeLimit: 30,
+        points: 0
+    },
+    {
+        id: 12,
         question: "身為台灣人，Marvin 最愛的飲料是？",
         options: ["珍珠奶茶", "芭樂綠茶", "可口可樂", "豆漿紅茶"],
         correctAnswer: 2,
@@ -112,7 +125,7 @@ export const sampleQuestions = [
         points: 0
     },
     {
-        id: 12,
+        id: 13,
         question: "Marvin 在哪款遊戲上課金最多？",
         options: ["Fortnite", "League of Legends", "Valorant", "Marvel Snap"],
         correctAnswer: 2,
@@ -120,7 +133,7 @@ export const sampleQuestions = [
         points: 0
     },
     {
-        id: 13,
+        id: 14,
         question: "以下什麼事會讓 Marvin 心裡最煩躁？",
         options: [
             "屁屁半夜五點吵我睡覺",
@@ -135,7 +148,7 @@ export const sampleQuestions = [
 
     // ==== 第 3 階段：腦洞與消費 ====
     {
-        id: 14,
+        id: 15,
         question: "Marvin 買Groceries的習慣是？",
         options: ["斤斤計較", "一次囤夠", "有機食品", "選擇困難"],
         correctAnswer: 1,
@@ -143,7 +156,7 @@ export const sampleQuestions = [
         points: 0
     },
     {
-        id: 15,
+        id: 16,
         question: "Marvin 最喜歡以下哪位歌手",
         options: [
             "XXXTentacion",
@@ -156,7 +169,7 @@ export const sampleQuestions = [
         points: 0
     },
     {
-        id: 16,
+        id: 17,
         question: "Marvin 會選一個超能力，絕對會選？",
         options: ["隱身術", "讀心術", "瞬間移動", "力大無窮"],
         correctAnswer: 2,
@@ -164,7 +177,7 @@ export const sampleQuestions = [
         points: 0
     },
     {
-        id: 17,
+        id: 18,
         question: "這個問答網站，Marvin 花了多久做出來(w/ Claude Code)？",
         options: [
             "1 week",
@@ -177,7 +190,7 @@ export const sampleQuestions = [
         points: 0
     },
     {
-        id: 18,
+        id: 19,
         question: "Marvin 是甚麼的忠實粉絲?",
         options: [
             "日本AV女優",
@@ -192,10 +205,10 @@ export const sampleQuestions = [
 
     // ==== 第 4 階段：搞事與爆料 ====
     {
-        id: 19,
+        id: 20,
         question: "喝醉酒的 Marvin 會變成？",
         options: [
-            "Pretend to sleep/Play dead",
+            "Sleep/Play dead",
             "English Native Speaker",
             "Become a Psychopath",
             "Never drunk before"
@@ -205,11 +218,24 @@ export const sampleQuestions = [
         points: 0
     },
     {
-        id: 20,
+        id: 21,
+        question: "最符合我自傳的書名",
+        options: [
+            "《論如何一事無成，卻依然高度自信》",
+            "《從入門到放棄：半途而廢的 100 件事》",
+            "《我買的不是廢物，是當下的快樂》",
+            "《我下次一定準時》"
+        ],
+        correctAnswer: 1,
+        timeLimit: 30,
+        points: 0
+    },
+    {
+        id: 22,
         question: "下列關於 Marvin 的敘述，哪一個是真？",
         options: [
             "我其實討厭貓咪",
-            "我其實是 Gay",
+            "我其實是Gay",
             "我其實想當黑人",
             "我其實休學過"
         ],
@@ -218,10 +244,10 @@ export const sampleQuestions = [
         points: 0
     },
     {
-        id: 21,
+        id: 23,
         question: "Marvin 為甚麼失眠是因為?",
         options: [
-            "Super Horny",
+            "Super horny",
             "Can't stop thinking",
             "Non-stop Instagram Reels",
             "No special reason"
@@ -231,7 +257,7 @@ export const sampleQuestions = [
         points: 0
     },
     {
-        id: 22,
+        id: 24,
         question: "在 Baltimore 生活過後，Marvin 進步最多技能是？",
         options: [
             "很會Small talk",
@@ -246,7 +272,7 @@ export const sampleQuestions = [
 
     // ==== 第 5 階段：最終大獎 ====
     {
-        id: 23,
+        id: 25,
         question: "Marvin 最近一筆「大額消費」是為了什麼",
         options: [
             "AI tokens 年費",
@@ -261,7 +287,7 @@ export const sampleQuestions = [
 
     // ==== 特別邀請 ====
     {
-        id: 24,
+        id: 26,
         question: "3/1 禮拜日晚上7點 MATT RIFE 脫口秀世界巡迴想去嗎?",
         options: ["是", "否", "看看影片再決定"],
         correctAnswer: 0,
