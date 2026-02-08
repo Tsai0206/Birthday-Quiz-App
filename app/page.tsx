@@ -88,7 +88,7 @@ export default function Home() {
         <div className="text-center mb-12 animate-slide-up">
           <div className="inline-block bg-white p-2 rounded-full shadow-xl mb-6 transform hover:scale-110 transition-all duration-300 overflow-hidden">
             <img
-              src="/profile.jpg"
+              src="/profile.jpg?v=2"
               alt="Profile"
               className="w-24 h-24 rounded-full object-cover"
             />
