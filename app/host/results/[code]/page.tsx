@@ -136,8 +136,9 @@ export default function HostResultsPage() {
             />
 
             <div className="max-w-6xl mx-auto relative z-10" id="results-screenshot">
-                <h1 className="text-6xl font-bold text-center text-white mb-12 drop-shadow-lg">
-                    🏆 最終結果
+                <h1 className="text-5xl md:text-6xl font-bold text-center text-white mb-12 drop-shadow-lg flex items-center justify-center gap-4">
+                    <span>🏆</span>
+                    <span>最終結果</span>
                 </h1>
 
                 {/* Podium */}

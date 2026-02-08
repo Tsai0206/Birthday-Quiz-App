@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import type { Player } from '@/lib/supabase';
-import Robot3D from '@/components/Robot3D';
 
 export default function HostLobbyPage() {
     const params = useParams();
@@ -15,20 +14,6 @@ export default function HostLobbyPage() {
     const [playerCount, setPlayerCount] = useState(0);
     const [gameId, setGameId] = useState<string | null>(null);
     const [isStarting, setIsStarting] = useState(false);
-    const [robotLook, setRobotLook] = useState<'left' | 'right' | 'center'>('center');
-
-    // Auto-switch robot look direction
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setRobotLook((prev) => {
-                if (prev === 'center') return 'left';
-                if (prev === 'left') return 'right';
-                return 'center';
-            });
-        }, 2000); // Switch every 2 seconds
-
-        return () => clearInterval(interval);
-    }, []);
 
     useEffect(() => {
         let channel: ReturnType<typeof supabase.channel> | null = null;
@@ -140,9 +125,9 @@ export default function HostLobbyPage() {
                     </div>
                 </div>
 
-                {/* Robot + Players Layout */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-                    {/* Host Section (Left) */}
+                {/* Host + Players Layout */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                    {/* Host Section */}
                     <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20">
                         <h3 className="text-xl font-bold text-white mb-4 text-center">👑 主持人</h3>
                         <div className="flex justify-center">
@@ -153,12 +138,7 @@ export default function HostLobbyPage() {
                         </div>
                     </div>
 
-                    {/* Robot (Center) */}
-                    <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20 flex items-center justify-center">
-                        <Robot3D lookDirection={robotLook} />
-                    </div>
-
-                    {/* Players Count (Right) */}
+                    {/* Players Count */}
                     <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20">
                         <h3 className="text-xl font-bold text-white mb-4 text-center">👥 玩家</h3>
                         <div className="text-center">

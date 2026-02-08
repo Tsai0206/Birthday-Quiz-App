@@ -1,4 +1,4 @@
-# Marvin 生日奪命問答 (Marvin's Birthday Roast Quiz) - Version 3.0 (Final Draft)
+# Marvin 24歲生日問答 (Marvin's Birthday Quiz) - Version 3.0 (Final Draft)
 
 ## 📌 重點更新 (Key Updates)
 1.  **居住地計算**: 彰化 (出生~大班, 小二, 高中) > 東莞 (小一, 小三~小六)。

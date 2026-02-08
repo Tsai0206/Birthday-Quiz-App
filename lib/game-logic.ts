@@ -64,10 +64,13 @@ export function calculatePoints(timeTaken: number, timeLimit: number): number {
     return Math.max(0, speedBonus);
 }
 
-// Avatar options
+// Avatar options (20+ fun emojis)
 export const avatarOptions = [
     "😀", "😎", "🤓", "🥳", "🤩", "😇",
-    "🤗", "🥰", "😊", "🙃", "😏", "🤪"
+    "🤗", "🥰", "😊", "🙃", "😏", "🤪",
+    "🤡", "👻", "👽", "🤖", "💩", "🦄",
+    "🐶", "🐱", "🐼", "🦊", "🐸", "🦁",
+    "🌟", "⚡", "🔥", "💎", "🎭", "🎪"
 ];
 
 // ==========================================

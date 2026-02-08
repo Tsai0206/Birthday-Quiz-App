@@ -19,6 +19,12 @@ interface ShuffledQuestion {
     timeLimit: number;
 }
 
+// Random error messages
+const getRandomErrorMessage = () => {
+    const messages = ["請加油...", "太不了解它了喔", "考倒你了吧", "Oops"];
+    return messages[Math.floor(Math.random() * messages.length)];
+};
+
 export default function PlayerGamePage() {
     const params = useParams();
     const router = useRouter();
@@ -34,6 +40,8 @@ export default function PlayerGamePage() {
     const [hasAnswered, setHasAnswered] = useState(false);
     const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
     const [pointsEarned, setPointsEarned] = useState(0);
+    const [isTimeout, setIsTimeout] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
 
     // 🔒 Database-backed shuffle for anti-cheating
     const shuffleQuestion = async (questionIndex: number) => {
@@ -87,6 +95,8 @@ export default function PlayerGamePage() {
                         setHasAnswered(false);
                         setIsCorrect(null);
                         setPointsEarned(0);
+                        setIsTimeout(false);
+                        setErrorMessage('');
                     }
                 }).subscribe();
             return () => { supabase.removeChannel(channel); };
@@ -106,8 +116,20 @@ export default function PlayerGamePage() {
     }, [currentQuestionIndex, hasAnswered, shuffledQuestion]);
 
     const handleTimeout = async () => {
-        setHasAnswered(true); setIsCorrect(false);
-        await supabase.from('answers').insert({ game_id: gameId, player_id: playerId, question_index: currentQuestionIndex, selected_option: -1, is_correct: false, time_taken: 30, points_earned: 0 });
+        setHasAnswered(true);
+        setIsCorrect(false);
+        setIsTimeout(true);
+        setErrorMessage("你反應很慢耶");
+        setPointsEarned(0);
+        await supabase.from('answers').insert({
+            game_id: gameId,
+            player_id: playerId,
+            question_index: currentQuestionIndex,
+            selected_option: -1,
+            is_correct: false,
+            time_taken: 30,
+            points_earned: 0
+        });
     };
 
     const handleAnswerClick = async (index: number) => {
@@ -132,6 +154,10 @@ export default function PlayerGamePage() {
         const points = correct ? calculatePoints(timeTaken, 30) : 0;
         setIsCorrect(correct);
         setPointsEarned(points);
+        setIsTimeout(false);
+        if (!correct) {
+            setErrorMessage(getRandomErrorMessage());
+        }
 
         // Get original index for database storage
         const originalIndex = shuffledQuestion.shuffledIndices[index];
@@ -222,16 +248,25 @@ export default function PlayerGamePage() {
 
             {/* Feedback Bar */}
             {hasAnswered && (
-                <div className={`fixed bottom-0 left-0 w-full p-6 rounded-t-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.1)] animate-slide-up z-20 ${isCorrect ? 'bg-[#2A9D8F]' : 'bg-[#E76F51]'
+                <div className={`fixed bottom-0 left-0 w-full p-6 rounded-t-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.1)] animate-slide-up z-20 ${isCorrect ? 'bg-[#2A9D8F]' : isTimeout ? 'bg-[#9CA3AF]' : 'bg-[#E76F51]'
                     }`}>
                     <div className="flex justify-between items-center text-white">
                         <div>
-                            <div className="text-sm font-bold opacity-80 uppercase">RESULT</div>
-                            <div className="text-2xl font-black">{isCorrect ? 'Excellent! 🎉' : 'Oops! 😅'}</div>
+                            <div className="text-sm font-bold opacity-80 uppercase">
+                                {isCorrect ? 'CORRECT' : isTimeout ? 'TIME OUT' : 'WRONG'}
+                            </div>
+                            <div className="text-2xl font-black">
+                                {isCorrect ? 'Excellent! 🎉' : isTimeout ? '你反應很慢耶 ⏰' : `${errorMessage} 😅`}
+                            </div>
                         </div>
                         {isCorrect && (
                             <div className="bg-white/20 px-4 py-2 rounded-xl font-black text-xl">
                                 +{pointsEarned} pts
+                            </div>
+                        )}
+                        {!isCorrect && (
+                            <div className="bg-white/20 px-4 py-2 rounded-xl font-black text-xl">
+                                0 pts
                             </div>
                         )}
                     </div>
