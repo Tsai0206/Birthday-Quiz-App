@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import type { Player } from '@/lib/supabase';
+import FlowGradientHeroSection from '@/components/ui/flow-gradient-hero-section';
 
 export default function HostLobbyPage() {
     const params = useParams();
@@ -111,47 +112,51 @@ export default function HostLobbyPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-4">
-            <div className="max-w-4xl mx-auto">
+        <div className="min-h-screen p-4 relative overflow-hidden">
+            {/* Liquid Gradient Background */}
+            <FlowGradientHeroSection />
+
+            {/* Content Overlay */}
+            <div className="max-w-4xl mx-auto relative z-10">
                 {/* Header */}
                 <div className="text-center mb-8">
-                    <h1 className="text-5xl font-bold text-white mb-4">🎮 主持人大廳</h1>
-                    <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 inline-block border border-white/20">
-                        <p className="text-gray-300 mb-2">房間代碼</p>
-                        <p className="text-6xl font-bold text-orange-400 tracking-widest">{roomCode}</p>
+                    <h1 className="text-5xl font-bold text-[#264653] mb-4">🎮 主持人大廳</h1>
+                    <div className="bg-white/80 backdrop-blur-lg rounded-2xl p-6 inline-block border border-white/50 shadow-xl">
+                        <p className="text-gray-600 mb-2 font-semibold">房間代碼</p>
+                        <p className="text-6xl font-bold text-[#E76F51] tracking-widest">{roomCode}</p>
                     </div>
-                    <div className="mt-4 text-2xl text-white">
-                        👥 當前人數: <span className="text-green-400 font-bold">{playerCount}</span>
+                    <div className="mt-4 text-2xl text-[#264653] font-bold">
+                        👥 當前人數: <span className="text-[#2A9D8F] font-black">{playerCount}</span>
                     </div>
                 </div>
 
                 {/* Host + Players Layout */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
                     {/* Host Section */}
-                    <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20">
-                        <h3 className="text-xl font-bold text-white mb-4 text-center">👑 主持人</h3>
+                    <div className="bg-white/80 backdrop-blur-lg rounded-2xl p-6 border border-white/50 shadow-xl">
+                        <h3 className="text-xl font-bold text-[#264653] mb-4 text-center">👑 主持人</h3>
                         <div className="flex justify-center">
-                            <div className="bg-orange-500/20 rounded-xl p-4 border border-orange-500/50">
+                            <div className="bg-[#E76F51]/20 rounded-xl p-4 border-2 border-[#E76F51]/50">
                                 <div className="text-6xl text-center">🎮</div>
-                                <div className="text-white font-semibold text-center mt-2">你</div>
+                                <div className="text-[#264653] font-bold text-center mt-2">你</div>
                             </div>
                         </div>
                     </div>
 
                     {/* Players Count */}
-                    <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20">
-                        <h3 className="text-xl font-bold text-white mb-4 text-center">👥 玩家</h3>
+                    <div className="bg-white/80 backdrop-blur-lg rounded-2xl p-6 border border-white/50 shadow-xl">
+                        <h3 className="text-xl font-bold text-[#264653] mb-4 text-center">👥 玩家</h3>
                         <div className="text-center">
-                            <div className="text-6xl font-bold text-green-400">{playerCount}</div>
-                            <div className="text-gray-300 mt-2">位玩家已加入</div>
+                            <div className="text-6xl font-bold text-[#2A9D8F]">{playerCount}</div>
+                            <div className="text-gray-600 mt-2 font-semibold">位玩家已加入</div>
                         </div>
                     </div>
                 </div>
 
                 {/* Players Grid */}
-                <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 mb-6 border border-white/20 min-h-[300px]">
+                <div className="bg-white/80 backdrop-blur-lg rounded-2xl p-8 mb-6 border border-white/50 shadow-xl min-h-[300px]">
                     {players.length === 0 ? (
-                        <div className="flex items-center justify-center h-full text-gray-400 text-xl">
+                        <div className="flex items-center justify-center h-full text-gray-500 text-xl font-semibold">
                             等待玩家加入...
                         </div>
                     ) : (
@@ -159,17 +164,17 @@ export default function HostLobbyPage() {
                             {players.map((player) => (
                                 <div
                                     key={player.id}
-                                    className="bg-white/10 rounded-xl p-4 border border-white/20 text-center transform transition-all duration-300 hover:scale-105"
+                                    className="bg-white/70 rounded-xl p-4 border border-gray-200 text-center transform transition-all duration-300 hover:scale-105 shadow-md"
                                 >
                                     <div className="text-5xl mb-2">{player.avatar}</div>
-                                    <div className="text-white font-semibold truncate">{player.username}</div>
+                                    <div className="text-[#264653] font-bold truncate">{player.username}</div>
                                     {player.personal_quote && (
-                                        <div className="text-gray-400 text-sm mt-2 truncate">
+                                        <div className="text-gray-500 text-sm mt-2 truncate">
                                             "{player.personal_quote}"
                                         </div>
                                     )}
                                     {player.is_host && (
-                                        <div className="mt-2 bg-orange-500/30 text-orange-300 text-xs px-2 py-1 rounded-full">
+                                        <div className="mt-2 bg-[#E76F51]/30 text-[#E76F51] text-xs px-2 py-1 rounded-full font-bold">
                                             主持人
                                         </div>
                                     )}
@@ -189,8 +194,8 @@ export default function HostLobbyPage() {
                 </button>
 
                 {/* Instructions */}
-                <div className="mt-6 text-center text-gray-400">
-                    <p>分享房間代碼給朋友，讓他們加入遊戲</p>
+                <div className="mt-6 text-center text-gray-600">
+                    <p className="font-semibold">分享房間代碼給朋友，讓他們加入遊戲</p>
                     <p className="text-sm mt-2">主持人不參與答題，只負責管理和查看統計</p>
                 </div>
             </div>

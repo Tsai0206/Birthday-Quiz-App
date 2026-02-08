@@ -5,6 +5,7 @@ import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import type { Player } from '@/lib/supabase';
 import Matter from 'matter-js';
+import FlowGradientHeroSection from '@/components/ui/flow-gradient-hero-section';
 
 export default function PlayerLobbyPage() {
     const params = useParams();
@@ -207,15 +208,23 @@ export default function PlayerLobbyPage() {
         };
     }, [players, currentPlayer]);
 
-    if (!currentPlayer) return <div className="min-h-screen bg-[#F0FDF4] flex items-center justify-center">載入中...</div>;
+    if (!currentPlayer) return (
+        <div className="min-h-screen flex items-center justify-center relative">
+            <FlowGradientHeroSection />
+            <div className="relative z-10">載入中...</div>
+        </div>
+    );
 
     return (
-        <div className="min-h-screen bg-[#F0FDF4] p-6 flex flex-col relative overflow-hidden">
-            {/* Background Decoration */}
-            <div className="absolute top-0 left-0 w-full h-64 bg-gradient-to-b from-[#2A9D8F] to-[#F0FDF4] opacity-20 pointer-events-none" />
+        <div className="min-h-screen p-6 flex flex-col relative overflow-hidden">
+            {/* Liquid Gradient Background */}
+            <FlowGradientHeroSection />
+
+            {/* Content Overlay */}
+            <div className="relative z-10 flex flex-col h-full">
 
             {/* Header Card */}
-            <div className="bg-white rounded-3xl p-6 shadow-xl mb-6 flex items-center gap-4 relative z-10 animate-slide-up">
+            <div className="bg-white/80 backdrop-blur-md rounded-3xl p-6 shadow-xl mb-6 flex items-center gap-4 animate-slide-up">
                 <div className="w-16 h-16 bg-[#F0FDF4] rounded-2xl flex items-center justify-center text-4xl border-2 border-[#2A9D8F]/20">
                     {currentPlayer.avatar}
                 </div>
@@ -258,6 +267,8 @@ export default function PlayerLobbyPage() {
                         />
                     </div>
                 </div>
+            </div>
+
             </div>
         </div>
     );

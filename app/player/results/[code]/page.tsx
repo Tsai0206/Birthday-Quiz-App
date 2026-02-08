@@ -220,9 +220,28 @@ export default function PlayerResultsPage() {
                     </div>
                 </div>
 
-                {/* Full Leaderboard - Show all players */}
+                {/* Podium Scores - Show top 3 scores */}
+                <div className="flex justify-center gap-8 mb-6 animate-slide-up" style={{ animationDelay: '0.15s' }}>
+                    {topPlayers.slice(0, 3).map((player, index) => {
+                        const rank = index + 1;
+                        return (
+                            <div key={player.id} className="text-center">
+                                <div className={`text-3xl font-black mb-1 ${
+                                    rank === 1 ? 'text-[#FBBF24]' :
+                                    rank === 2 ? 'text-gray-400' :
+                                    'text-amber-600'
+                                }`}>
+                                    {player.score}
+                                </div>
+                                <div className="text-xs text-gray-500 font-bold">分數</div>
+                            </div>
+                        );
+                    })}
+                </div>
+
+                {/* Full Leaderboard - Show all players with gradient */}
                 {allPlayers.length > 0 && (
-                    <div className="bg-white rounded-3xl p-6 shadow-xl mb-4 animate-slide-up" style={{ animationDelay: '0.2s' }}>
+                    <div className="bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 rounded-3xl p-6 shadow-xl mb-4 animate-slide-up border border-purple-100" style={{ animationDelay: '0.2s' }}>
                         <h3 className="text-lg font-black text-[#1F2937] mb-4">完整排行榜</h3>
                         <div className="space-y-2">
                             {allPlayers.map((player, index) => {
@@ -232,7 +251,7 @@ export default function PlayerResultsPage() {
                                     <div
                                         key={player.id}
                                         className={`flex items-center gap-3 p-3 rounded-xl transition-all ${
-                                            isCurrentPlayer ? 'bg-[#E76F51]/10 border-2 border-[#E76F51]' : 'bg-gray-50'
+                                            isCurrentPlayer ? 'bg-white/80 border-2 border-[#E76F51] shadow-md' : 'bg-white/50 backdrop-blur-sm'
                                         }`}
                                     >
                                         <div className={`text-lg font-bold w-8 ${
