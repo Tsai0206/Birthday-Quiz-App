@@ -7,7 +7,7 @@ export const sampleQuestions = [
         options: [
             "Biomedical Engineering",
             "Biochemical Engineering",
-            "Biomedical Enginearing",
+            "BioEnginearing",
             "Biomedical Imagineering"
         ],
         correctAnswer: 0,
@@ -105,7 +105,7 @@ export const sampleQuestions = [
     },
     {
         id: 11,
-        question: "屁屁(我的貓)為甚麼叫"屁屁"",
+        question: "屁屁(我的貓)為甚麼叫屁屁",
         options: [
             "他小時候屁股特別肥",
             "他小時候很愛睡在我屁股旁邊",
