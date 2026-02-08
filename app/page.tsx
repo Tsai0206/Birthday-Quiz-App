@@ -151,7 +151,7 @@ export default function Home() {
 
         {/* Footer */}
         <div className="mt-12 text-center text-[#264653]/40 text-sm font-medium">
-          Powered by Marvin's super insane self-trained AI model 🤖
+          Powered by Marvin's self-trained AI model 🤖
         </div>
 
       </main>
