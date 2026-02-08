@@ -220,13 +220,13 @@ export default function PlayerResultsPage() {
                     </div>
                 </div>
 
-                {/* Full Leaderboard */}
-                {allPlayers.length > 3 && (
+                {/* Full Leaderboard - Show all players */}
+                {allPlayers.length > 0 && (
                     <div className="bg-white rounded-3xl p-6 shadow-xl mb-4 animate-slide-up" style={{ animationDelay: '0.2s' }}>
                         <h3 className="text-lg font-black text-[#1F2937] mb-4">完整排行榜</h3>
                         <div className="space-y-2">
-                            {allPlayers.slice(3).map((player, index) => {
-                                const actualRank = index + 4;
+                            {allPlayers.map((player, index) => {
+                                const actualRank = index + 1;
                                 const isCurrentPlayer = player.id === playerId;
                                 return (
                                     <div
@@ -235,13 +235,18 @@ export default function PlayerResultsPage() {
                                             isCurrentPlayer ? 'bg-[#E76F51]/10 border-2 border-[#E76F51]' : 'bg-gray-50'
                                         }`}
                                     >
-                                        <div className="text-lg font-bold text-gray-400 w-8">
-                                            #{actualRank}
+                                        <div className={`text-lg font-bold w-8 ${
+                                            actualRank === 1 ? 'text-yellow-500' :
+                                            actualRank === 2 ? 'text-gray-400' :
+                                            actualRank === 3 ? 'text-amber-600' : 'text-gray-400'
+                                        }`}>
+                                            {actualRank === 1 ? '🥇' : actualRank === 2 ? '🥈' : actualRank === 3 ? '🥉' : `#${actualRank}`}
                                         </div>
                                         <div className="text-2xl">{player.avatar}</div>
                                         <div className="flex-grow">
                                             <div className={`font-bold ${isCurrentPlayer ? 'text-[#E76F51]' : 'text-[#1F2937]'}`}>
                                                 {player.username}
+                                                {isCurrentPlayer && <span className="ml-2 text-xs text-gray-500">（你）</span>}
                                             </div>
                                         </div>
                                         <div className="text-[#2A9D8F] font-bold text-lg">

@@ -7,7 +7,7 @@ export const sampleQuestions = [
         options: [
             "Biomedical Engineering",
             "Biochemical Engineering",
-            "Biomedical Engineering",
+            "Biomedical Enginnearing",
             "Biomedical Imagineering"
         ],
         correctAnswer: 0,

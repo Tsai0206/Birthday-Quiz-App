@@ -22,6 +22,7 @@ export default function HostGamePage() {
     const currentQuestion = sampleQuestions[currentQuestionIndex];
     const totalQuestions = sampleQuestions.length;
 
+    // Fetch game and players once
     useEffect(() => {
         const setupGame = async () => {
             const { data: game } = await supabase
@@ -48,40 +49,63 @@ export default function HostGamePage() {
             if (gamePlayers) {
                 setPlayers(gamePlayers);
             }
+        };
 
-            // Subscribe to answer changes
-            const channel = supabase
-                .channel(`game-answers-${game.id}`)
-                .on(
-                    'postgres_changes',
-                    {
-                        event: '*',
-                        schema: 'public',
-                        table: 'answers',
-                        filter: `game_id=eq.${game.id}`
-                    },
-                    async () => {
+        setupGame();
+    }, [roomCode, router]);
+
+    // Subscribe to answer changes (recreate subscription when question changes)
+    useEffect(() => {
+        if (!gameId) return;
+
+        // Fetch initial answered players for current question
+        const fetchAnsweredPlayers = async () => {
+            const { data: answers } = await supabase
+                .from('answers')
+                .select('player_id')
+                .eq('game_id', gameId)
+                .eq('question_index', currentQuestionIndex);
+
+            if (answers) {
+                setAnsweredPlayers(answers.map(a => a.player_id));
+            }
+        };
+
+        fetchAnsweredPlayers();
+
+        // Subscribe to answer changes for current question
+        const channel = supabase
+            .channel(`game-answers-${gameId}-q${currentQuestionIndex}`)
+            .on(
+                'postgres_changes',
+                {
+                    event: '*',
+                    schema: 'public',
+                    table: 'answers',
+                    filter: `game_id=eq.${gameId}`
+                },
+                async (payload: any) => {
+                    // Only update if the answer is for current question
+                    if (payload.new && payload.new.question_index === currentQuestionIndex) {
                         // Refetch answered players for current question
                         const { data: answers } = await supabase
                             .from('answers')
                             .select('player_id')
-                            .eq('game_id', game.id)
+                            .eq('game_id', gameId)
                             .eq('question_index', currentQuestionIndex);
 
                         if (answers) {
                             setAnsweredPlayers(answers.map(a => a.player_id));
                         }
                     }
-                )
-                .subscribe();
+                }
+            )
+            .subscribe();
 
-            return () => {
-                supabase.removeChannel(channel);
-            };
+        return () => {
+            supabase.removeChannel(channel);
         };
-
-        setupGame();
-    }, [roomCode, router, currentQuestionIndex]);
+    }, [gameId, currentQuestionIndex]);
 
     // Timer countdown
     useEffect(() => {
