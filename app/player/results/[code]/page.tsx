@@ -16,6 +16,7 @@ export default function PlayerResultsPage() {
     const [currentPlayer, setCurrentPlayer] = useState<Player | null>(null);
     const [rank, setRank] = useState<number>(0);
     const [topPlayers, setTopPlayers] = useState<Player[]>([]);
+    const [allPlayers, setAllPlayers] = useState<Player[]>([]);
     const [stats, setStats] = useState<{
         correctAnswers: number;
         totalQuestions: number;
@@ -35,6 +36,7 @@ export default function PlayerResultsPage() {
                         setRank(playerIndex + 1);
                     }
                     setTopPlayers(players.slice(0, 3));
+                    setAllPlayers(players);
                 }
 
                 // Fetch player's answers for statistics
@@ -150,6 +152,40 @@ export default function PlayerResultsPage() {
                         <div className="text-xs text-gray-500 font-bold uppercase">名次</div>
                     </div>
                 </div>
+
+                {/* Full Leaderboard */}
+                {allPlayers.length > 3 && (
+                    <div className="bg-white rounded-3xl p-6 shadow-xl mb-4 animate-slide-up" style={{ animationDelay: '0.2s' }}>
+                        <h3 className="text-lg font-black text-[#1F2937] mb-4">完整排行榜</h3>
+                        <div className="space-y-2">
+                            {allPlayers.slice(3).map((player, index) => {
+                                const actualRank = index + 4;
+                                const isCurrentPlayer = player.id === playerId;
+                                return (
+                                    <div
+                                        key={player.id}
+                                        className={`flex items-center gap-3 p-3 rounded-xl transition-all ${
+                                            isCurrentPlayer ? 'bg-[#E76F51]/10 border-2 border-[#E76F51]' : 'bg-gray-50'
+                                        }`}
+                                    >
+                                        <div className="text-lg font-bold text-gray-400 w-8">
+                                            #{actualRank}
+                                        </div>
+                                        <div className="text-2xl">{player.avatar}</div>
+                                        <div className="flex-grow">
+                                            <div className={`font-bold ${isCurrentPlayer ? 'text-[#E76F51]' : 'text-[#1F2937]'}`}>
+                                                {player.username}
+                                            </div>
+                                        </div>
+                                        <div className="text-[#2A9D8F] font-bold text-lg">
+                                            {player.score}
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                )}
 
                 <Link href="/" className="block w-full bg-gradient-to-r from-[#E76F51] to-[#E9C46A] text-white font-bold py-4 rounded-2xl text-center shadow-lg shadow-orange-500/30 hover:scale-105 transition-transform">
                     🎮 再玩一次

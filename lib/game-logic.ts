@@ -2,7 +2,7 @@
 export const sampleQuestions = [
     {
         id: 1,
-        question: "壽星今年幾歲?",
+        question: "Marvin 今年幾歲?",
         options: ["18歲", "19歲", "20歲", "21歲"],
         correctAnswer: 2,
         timeLimit: 30,
@@ -10,7 +10,7 @@ export const sampleQuestions = [
     },
     {
         id: 2,
-        question: "壽星最喜歡的顏色是?",
+        question: "Marvin 最喜歡的顏色是?",
         options: ["紅色", "藍色", "綠色", "紫色"],
         correctAnswer: 1,
         timeLimit: 30,
@@ -18,7 +18,7 @@ export const sampleQuestions = [
     },
     {
         id: 3,
-        question: "壽星的星座是?",
+        question: "Marvin 的星座是?",
         options: ["水瓶座", "雙魚座", "牡羊座", "金牛座"],
         correctAnswer: 0,
         timeLimit: 30,
@@ -26,7 +26,7 @@ export const sampleQuestions = [
     },
     {
         id: 4,
-        question: "壽星最喜歡的食物是?",
+        question: "Marvin 最喜歡的食物是?",
         options: ["披薩", "壽司", "牛排", "火鍋"],
         correctAnswer: 3,
         timeLimit: 30,
@@ -34,7 +34,7 @@ export const sampleQuestions = [
     },
     {
         id: 5,
-        question: "壽星的興趣是?",
+        question: "Marvin 的興趣是?",
         options: ["運動", "音樂", "繪畫", "閱讀"],
         correctAnswer: 1,
         timeLimit: 30,

@@ -88,11 +88,11 @@ export default function Home() {
           <div className="inline-block bg-white p-6 rounded-3xl shadow-xl mb-6 transform hover:rotate-3 transition-all duration-300">
             <span className="text-6xl">🎂</span>
           </div>
-          <h1 className="text-4xl md:text-6xl font-black text-[#264653] mb-2 tracking-tight">
-            Birthday<span className="text-[#E76F51]">Quiz</span>
+          <h1 className="text-3xl md:text-5xl font-black text-[#264653] mb-2 tracking-tight leading-tight">
+            Do you understand <span className="text-[#E76F51]">Marvin</span> well?
           </h1>
           <p className="text-[#264653]/70 text-lg font-medium">
-            一起來玩最有趣的生日問答！
+            第一名也沒有獎勵 haha
           </p>
         </div>
 

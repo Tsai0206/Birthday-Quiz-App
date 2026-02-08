@@ -6,12 +6,21 @@ import { supabase } from '@/lib/supabase';
 import type { Player } from '@/lib/supabase';
 import Link from 'next/link';
 import ShareButton from '@/components/ShareButton';
+import { sampleQuestions } from '@/lib/game-logic';
+
+interface PlayerAnswer {
+    player_id: string;
+    question_index: number;
+    is_correct: boolean;
+}
 
 export default function HostResultsPage() {
     const params = useParams();
     const router = useRouter();
     const roomCode = params.code as string;
     const [players, setPlayers] = useState<Player[]>([]);
+    const [playerAnswers, setPlayerAnswers] = useState<PlayerAnswer[]>([]);
+    const [expandedPlayerId, setExpandedPlayerId] = useState<string | null>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
     useEffect(() => {
@@ -31,6 +40,16 @@ export default function HostResultsPage() {
 
                 if (gamePlayers) {
                     setPlayers(gamePlayers);
+                }
+
+                // Fetch all answers for detailed view
+                const { data: answers } = await supabase
+                    .from('answers')
+                    .select('player_id, question_index, is_correct')
+                    .eq('game_id', game.id);
+
+                if (answers) {
+                    setPlayerAnswers(answers);
                 }
             }
         };
@@ -158,32 +177,72 @@ export default function HostResultsPage() {
                     )}
                 </div>
 
-                {/* Full Leaderboard */}
+                {/* Full Leaderboard with Details */}
                 <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20 max-w-2xl mx-auto">
-                    <h2 className="text-2xl font-bold text-white mb-6">排行榜</h2>
+                    <h2 className="text-2xl font-bold text-white mb-6">排行榜（點擊查看詳情）</h2>
                     <div className="space-y-3">
-                        {players.map((player, index) => (
-                            <div
-                                key={player.id}
-                                className={`flex items-center gap-4 p-4 rounded-xl transition-all hover:scale-[1.02] ${index < 3 ? 'bg-white/10 border border-white/20' : 'bg-white/5'
-                                    }`}
-                            >
-                                <div className={`text-2xl font-bold w-8 ${index === 0 ? 'text-yellow-400' :
-                                        index === 1 ? 'text-gray-300' :
-                                            index === 2 ? 'text-amber-600' : 'text-gray-500'
-                                    }`}>
-                                    {index + 1}
-                                </div>
-                                <div className="text-3xl">{player.avatar}</div>
-                                <div className="flex-grow">
-                                    <div className="text-white font-bold text-lg">{player.username}</div>
-                                    {player.personal_quote && (
-                                        <div className="text-gray-400 text-sm">"{player.personal_quote}"</div>
+                        {players.map((player, index) => {
+                            const isExpanded = expandedPlayerId === player.id;
+                            const playerAnswerDetails = playerAnswers.filter(a => a.player_id === player.id);
+
+                            return (
+                                <div
+                                    key={player.id}
+                                    className={`rounded-xl transition-all ${index < 3 ? 'bg-white/10 border border-white/20' : 'bg-white/5'
+                                        }`}
+                                >
+                                    <button
+                                        onClick={() => setExpandedPlayerId(isExpanded ? null : player.id)}
+                                        className="w-full flex items-center gap-4 p-4 hover:bg-white/5 transition-all rounded-xl"
+                                    >
+                                        <div className={`text-2xl font-bold w-8 ${index === 0 ? 'text-yellow-400' :
+                                                index === 1 ? 'text-gray-300' :
+                                                    index === 2 ? 'text-amber-600' : 'text-gray-500'
+                                            }`}>
+                                            {index + 1}
+                                        </div>
+                                        <div className="text-3xl">{player.avatar}</div>
+                                        <div className="flex-grow text-left">
+                                            <div className="text-white font-bold text-lg">{player.username}</div>
+                                            {player.personal_quote && (
+                                                <div className="text-gray-400 text-sm">"{player.personal_quote}"</div>
+                                            )}
+                                        </div>
+                                        <div className="text-2xl text-orange-400 font-bold">{player.score}</div>
+                                        <div className="text-white text-xl">{isExpanded ? '▼' : '▶'}</div>
+                                    </button>
+
+                                    {isExpanded && (
+                                        <div className="px-4 pb-4 pt-2 border-t border-white/10">
+                                            <div className="text-white text-sm mb-3 font-semibold">答題詳情：</div>
+                                            <div className="flex gap-2 flex-wrap">
+                                                {sampleQuestions.map((_, qIndex) => {
+                                                    const answer = playerAnswerDetails.find(a => a.question_index === qIndex);
+                                                    const isCorrect = answer?.is_correct || false;
+                                                    const hasAnswered = !!answer;
+
+                                                    return (
+                                                        <div
+                                                            key={qIndex}
+                                                            className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-all ${
+                                                                !hasAnswered ? 'bg-gray-600 text-gray-400' :
+                                                                isCorrect ? 'bg-green-500 text-white' : 'bg-gray-500 text-gray-300'
+                                                            }`}
+                                                            title={`第 ${qIndex + 1} 題${!hasAnswered ? '：未作答' : isCorrect ? '：答對 ✓' : '：答錯 ✗'}`}
+                                                        >
+                                                            {qIndex + 1}
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                            <div className="mt-3 text-gray-400 text-xs">
+                                                答對：{playerAnswerDetails.filter(a => a.is_correct).length} / {sampleQuestions.length}
+                                            </div>
+                                        </div>
                                     )}
                                 </div>
-                                <div className="text-2xl text-orange-400 font-bold">{player.score}</div>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
                 </div>
 

@@ -87,6 +87,17 @@ export default function HostGamePage() {
     useEffect(() => {
         if (isShowingAnswer || gameEnded) return;
 
+        // Check if all non-host players have answered
+        const nonHostPlayers = players.filter(p => !p.is_host);
+        const allAnswered = nonHostPlayers.length > 0 &&
+            nonHostPlayers.every(p => answeredPlayers.includes(p.id));
+
+        // If all answered, end countdown immediately
+        if (allAnswered) {
+            handleShowAnswer();
+            return;
+        }
+
         const timer = setInterval(() => {
             setTimeLeft((prev) => {
                 if (prev <= 1) {
@@ -99,7 +110,7 @@ export default function HostGamePage() {
         }, 1000);
 
         return () => clearInterval(timer);
-    }, [currentQuestionIndex, isShowingAnswer, gameEnded]);
+    }, [currentQuestionIndex, isShowingAnswer, gameEnded, answeredPlayers, players]);
 
     const handleShowAnswer = async () => {
         setIsShowingAnswer(true);
@@ -191,10 +202,10 @@ export default function HostGamePage() {
                     {/* Answer Status */}
                     <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20">
                         <h3 className="text-xl font-bold text-white mb-4">
-                            答題狀態 ({answeredPlayers.length}/{players.length})
+                            答題狀態 ({answeredPlayers.length}/{players.filter(p => !p.is_host).length})
                         </h3>
                         <div className="grid grid-cols-3 gap-2">
-                            {players.map((player) => (
+                            {players.filter(p => !p.is_host).map((player) => (
                                 <div
                                     key={player.id}
                                     className={`p-2 rounded-lg text-center transition-all ${answeredPlayers.includes(player.id)
