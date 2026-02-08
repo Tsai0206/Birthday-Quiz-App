@@ -5,7 +5,6 @@ import { useParams, useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import type { Player } from '@/lib/supabase';
 import Link from 'next/link';
-import ShareButton from '@/components/ShareButton';
 import { sampleQuestions } from '@/lib/game-logic';
 import FlowGradientHeroSection from '@/components/ui/flow-gradient-hero-section';
 
@@ -13,6 +12,13 @@ interface PlayerAnswer {
     player_id: string;
     question_index: number;
     is_correct: boolean;
+    selected_option?: number;
+}
+
+interface Question26Answer {
+    player_id: string;
+    selected_option: number;
+    player?: Player;
 }
 
 export default function HostResultsPage() {
@@ -22,6 +28,8 @@ export default function HostResultsPage() {
     const [players, setPlayers] = useState<Player[]>([]);
     const [playerAnswers, setPlayerAnswers] = useState<PlayerAnswer[]>([]);
     const [expandedPlayerId, setExpandedPlayerId] = useState<string | null>(null);
+    const [showRSVPModal, setShowRSVPModal] = useState(false);
+    const [question26Answers, setQuestion26Answers] = useState<Question26Answer[]>([]);
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
     useEffect(() => {
@@ -46,11 +54,26 @@ export default function HostResultsPage() {
                 // Fetch all answers for detailed view
                 const { data: answers } = await supabase
                     .from('answers')
-                    .select('player_id, question_index, is_correct')
+                    .select('player_id, question_index, is_correct, selected_option')
                     .eq('game_id', game.id);
 
                 if (answers) {
                     setPlayerAnswers(answers);
+                }
+
+                // Fetch question 26 (index 25) answers for RSVP
+                const { data: q26Answers } = await supabase
+                    .from('answers')
+                    .select('player_id, selected_option')
+                    .eq('game_id', game.id)
+                    .eq('question_index', 25);
+
+                if (q26Answers && gamePlayers) {
+                    const answersWithPlayers = q26Answers.map(answer => ({
+                        ...answer,
+                        player: gamePlayers.find(p => p.id === answer.player_id)
+                    }));
+                    setQuestion26Answers(answersWithPlayers);
                 }
             }
         };
@@ -253,18 +276,123 @@ export default function HostResultsPage() {
                 </div>
 
                 <div className="mt-12 flex flex-col sm:flex-row gap-4 justify-center items-center">
-                    <ShareButton
-                        targetId="results-screenshot"
-                        filename={`birthday-quiz-${roomCode}-${Date.now()}.png`}
-                        className="bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold py-4 px-8 rounded-full shadow-lg border border-white/20"
-                    />
+                    <button
+                        onClick={() => setShowRSVPModal(true)}
+                        className="bg-gradient-to-r from-[#E76F51] to-[#E9C46A] hover:from-[#D55F41] hover:to-[#D9B45A] text-white font-bold py-4 px-8 rounded-full shadow-lg transition-all hover:scale-105"
+                    >
+                        🎭 查看揪團結果
+                    </button>
                     <Link
                         href="/"
-                        className="inline-block bg-white/10 hover:bg-white/20 text-white font-bold py-4 px-8 rounded-full transition-all border border-white/20"
+                        className="inline-block bg-white/80 hover:bg-white text-[#264653] font-bold py-4 px-8 rounded-full transition-all shadow-lg hover:scale-105"
                     >
                         🏠 返回首頁
                     </Link>
                 </div>
+
+                {/* RSVP Modal for Question 26 */}
+                {showRSVPModal && (
+                    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-6 animate-fade-in" onClick={() => setShowRSVPModal(false)}>
+                        <div className="bg-white rounded-3xl p-8 w-full max-w-2xl shadow-2xl animate-slide-up max-h-[80vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+                            <div className="flex justify-between items-center mb-6">
+                                <h2 className="text-3xl font-black text-[#264653]">🎭 揪團結果</h2>
+                                <button
+                                    onClick={() => setShowRSVPModal(false)}
+                                    className="text-gray-400 hover:text-gray-600 text-3xl font-bold"
+                                >
+                                    ×
+                                </button>
+                            </div>
+
+                            <p className="text-gray-600 mb-6 text-center">3/1 禮拜日晚上7點 MATT RIFE 脫口秀世界巡迴</p>
+
+                            {/* Summary Statistics */}
+                            <div className="grid grid-cols-3 gap-4 mb-8">
+                                {[
+                                    { label: '是', value: question26Answers.filter(a => a.selected_option === 0).length, color: 'bg-green-500', emoji: '✅' },
+                                    { label: '否', value: question26Answers.filter(a => a.selected_option === 1).length, color: 'bg-red-500', emoji: '❌' },
+                                    { label: '看影片再決定', value: question26Answers.filter(a => a.selected_option === 2).length, color: 'bg-yellow-500', emoji: '🤔' }
+                                ].map((stat, index) => (
+                                    <div key={index} className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-4 text-center shadow-md">
+                                        <div className="text-3xl mb-2">{stat.emoji}</div>
+                                        <div className="text-3xl font-black text-[#264653]">{stat.value}</div>
+                                        <div className="text-sm text-gray-600 font-semibold">{stat.label}</div>
+                                    </div>
+                                ))}
+                            </div>
+
+                            {/* Detailed Lists */}
+                            <div className="space-y-6">
+                                {/* Yes Group */}
+                                <div className="bg-green-50 rounded-2xl p-4 border-2 border-green-200">
+                                    <h3 className="text-lg font-bold text-green-700 mb-3 flex items-center gap-2">
+                                        <span>✅</span> 想去的人 ({question26Answers.filter(a => a.selected_option === 0).length} 人)
+                                    </h3>
+                                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                                        {question26Answers
+                                            .filter(a => a.selected_option === 0)
+                                            .map((answer) => (
+                                                <div key={answer.player_id} className="bg-white rounded-xl p-3 flex items-center gap-2 shadow-sm">
+                                                    <div className="text-2xl">{answer.player?.avatar}</div>
+                                                    <div className="text-sm font-semibold text-[#264653] truncate">{answer.player?.username}</div>
+                                                </div>
+                                            ))}
+                                    </div>
+                                    {question26Answers.filter(a => a.selected_option === 0).length === 0 && (
+                                        <p className="text-gray-500 text-center py-2">沒有人選擇這個選項</p>
+                                    )}
+                                </div>
+
+                                {/* No Group */}
+                                <div className="bg-red-50 rounded-2xl p-4 border-2 border-red-200">
+                                    <h3 className="text-lg font-bold text-red-700 mb-3 flex items-center gap-2">
+                                        <span>❌</span> 不去的人 ({question26Answers.filter(a => a.selected_option === 1).length} 人)
+                                    </h3>
+                                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                                        {question26Answers
+                                            .filter(a => a.selected_option === 1)
+                                            .map((answer) => (
+                                                <div key={answer.player_id} className="bg-white rounded-xl p-3 flex items-center gap-2 shadow-sm">
+                                                    <div className="text-2xl">{answer.player?.avatar}</div>
+                                                    <div className="text-sm font-semibold text-[#264653] truncate">{answer.player?.username}</div>
+                                                </div>
+                                            ))}
+                                    </div>
+                                    {question26Answers.filter(a => a.selected_option === 1).length === 0 && (
+                                        <p className="text-gray-500 text-center py-2">沒有人選擇這個選項</p>
+                                    )}
+                                </div>
+
+                                {/* Maybe Group */}
+                                <div className="bg-yellow-50 rounded-2xl p-4 border-2 border-yellow-200">
+                                    <h3 className="text-lg font-bold text-yellow-700 mb-3 flex items-center gap-2">
+                                        <span>🤔</span> 看影片後再決定 ({question26Answers.filter(a => a.selected_option === 2).length} 人)
+                                    </h3>
+                                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                                        {question26Answers
+                                            .filter(a => a.selected_option === 2)
+                                            .map((answer) => (
+                                                <div key={answer.player_id} className="bg-white rounded-xl p-3 flex items-center gap-2 shadow-sm">
+                                                    <div className="text-2xl">{answer.player?.avatar}</div>
+                                                    <div className="text-sm font-semibold text-[#264653] truncate">{answer.player?.username}</div>
+                                                </div>
+                                            ))}
+                                    </div>
+                                    {question26Answers.filter(a => a.selected_option === 2).length === 0 && (
+                                        <p className="text-gray-500 text-center py-2">沒有人選擇這個選項</p>
+                                    )}
+                                </div>
+                            </div>
+
+                            <button
+                                onClick={() => setShowRSVPModal(false)}
+                                className="mt-6 w-full bg-gradient-to-r from-[#2A9D8F] to-[#52B788] text-white font-bold py-3 rounded-xl hover:scale-105 transition-transform"
+                            >
+                                關閉
+                            </button>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );
