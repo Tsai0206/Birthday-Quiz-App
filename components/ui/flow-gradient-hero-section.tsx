@@ -181,6 +181,8 @@ export default function FlowGradientHeroSection() {
 
             // Update touch texture
             const data = touchTexture.image.data;
+            if (!data) return;
+
             const size = 64;
             const centerX = Math.floor(mouseX * size);
             const centerY = Math.floor(mouseY * size);
