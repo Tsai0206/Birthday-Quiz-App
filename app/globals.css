@@ -1,35 +1,7 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-@layer utilities {
-  .animate-shake {
-    animation: shake 0.5s cubic-bezier(.36, .07, .19, .97) both;
-  }
-
-  .animate-slide-up {
-    animation: slideUp 0.6s ease-out forwards;
-  }
-
-  .animate-bounce-in {
-    animation: bounceIn 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
-  }
-
-  .animate-glow {
-    animation: glow 0.8s ease-in-out forwards;
-  }
-
-  .animate-pulse-scale {
-    animation: pulseScale 1s ease-in-out infinite;
-  }
-
-  .animate-fade-in {
-    animation: fadeIn 0.5s ease-out forwards;
-  }
-}
-
+/* Custom Animations */
 @keyframes shake {
-
   10%,
   90% {
     transform: translate3d(-1px, 0, 0);
@@ -118,6 +90,99 @@
   }
 }
 
+/* Utility Classes */
+.animate-shake {
+  animation: shake 0.5s cubic-bezier(.36, .07, .19, .97) both;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.6s ease-out forwards;
+}
+
+.animate-bounce-in {
+  animation: bounceIn 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+}
+
+.animate-glow {
+  animation: glow 0.8s ease-in-out forwards;
+}
+
+.animate-pulse-scale {
+  animation: pulseScale 1s ease-in-out infinite;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+/* Custom Component Classes */
+.btn-primary {
+  background-color: #E76F51;
+  color: white;
+  font-weight: bold;
+  padding: 1rem 2rem;
+  border-radius: 9999px;
+  box-shadow: 0 10px 15px -3px rgba(231, 111, 81, 0.3);
+  transition: all 0.3s;
+  transform: scale(1);
+}
+
+.btn-primary:hover {
+  transform: scale(1.05);
+}
+
+.btn-primary:active {
+  transform: scale(0.95);
+}
+
+.btn-secondary {
+  background-color: white;
+  color: #264653;
+  font-weight: bold;
+  padding: 1rem 2rem;
+  border-radius: 9999px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  border: 2px solid #E76F51;
+  transition: all 0.3s;
+}
+
+.btn-secondary:hover {
+  background-color: #F9FAFB;
+}
+
+.btn-secondary:active {
+  transform: scale(0.95);
+}
+
+.card-modern {
+  background-color: white;
+  border-radius: 1.5rem;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
+  border: 1px solid #F3F4F6;
+}
+
+.input-modern {
+  width: 100%;
+  background-color: #F9FAFB;
+  border: 2px solid #F3F4F6;
+  border-radius: 1rem;
+  padding: 1rem 1.5rem;
+  font-size: 1.125rem;
+  color: #374151;
+  font-weight: 500;
+  transition: border-color 0.3s;
+}
+
+.input-modern:focus {
+  outline: none;
+  border-color: #2A9D8F;
+}
+
+.input-modern::placeholder {
+  color: #9CA3AF;
+}
+
+/* CSS Variables */
 :root {
   /* Modern Palette based on reference */
   --primary-teal: #2A9D8F;
@@ -139,26 +204,6 @@
 body {
   background: var(--bg-soft);
   color: var(--foreground);
-  font-family: 'Outfit', sans-serif;
-  /* Modern, rounded sans */
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   -webkit-font-smoothing: antialiased;
-}
-
-/* Custom Utilities for the new look */
-@layer components {
-  .btn-primary {
-    @apply bg-[#E76F51] text-white font-bold py-4 px-8 rounded-full shadow-lg transform transition-all hover:scale-105 active:scale-95 shadow-orange-500/30;
-  }
-
-  .btn-secondary {
-    @apply bg-white text-[#264653] font-bold py-4 px-8 rounded-full shadow-md border-2 border-[#E76F51] transform transition-all hover:bg-gray-50 active:scale-95;
-  }
-
-  .card-modern {
-    @apply bg-white rounded-3xl shadow-[0_8px_30px_rgb(0, 0, 0, 0.04)] border border-gray-100;
-  }
-
-  .input-modern {
-    @apply w-full bg-gray-50 border-2 border-gray-100 rounded-2xl px-6 py-4 text-lg focus:outline-none focus:border-[#2A9D8F] transition-colors text-gray-700 font-medium placeholder-gray-400;
-  }
 }
