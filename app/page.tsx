@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { generateRoomCode } from '@/lib/game-logic';
+import BackgroundMusic from '@/components/BackgroundMusic';
 
 export default function Home() {
   const router = useRouter();
@@ -85,8 +86,12 @@ export default function Home() {
 
         {/* Logo/Hero Section */}
         <div className="text-center mb-12 animate-slide-up">
-          <div className="inline-block bg-white p-6 rounded-3xl shadow-xl mb-6 transform hover:rotate-3 transition-all duration-300">
-            <span className="text-6xl">🎯</span>
+          <div className="inline-block bg-white p-2 rounded-full shadow-xl mb-6 transform hover:scale-110 transition-all duration-300 overflow-hidden">
+            <img
+              src="/profile.jpg"
+              alt="Profile"
+              className="w-24 h-24 rounded-full object-cover"
+            />
           </div>
           <h1 className="text-4xl md:text-6xl font-black text-[#264653] mb-2 tracking-tight leading-tight">
             <span className="text-[#E76F51]">Marv</span>elous Quiz
@@ -150,6 +155,9 @@ export default function Home() {
         </div>
 
       </main>
+
+      {/* Background Music Player */}
+      <BackgroundMusic />
     </div>
   );
 }

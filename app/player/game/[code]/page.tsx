@@ -20,6 +20,7 @@ interface ShuffledQuestion {
     timeLimit: number;
     isSpecial?: boolean; // Flag for special questions
     videoLink?: string; // Optional video link for special questions
+    imageUrl?: string; // Optional image for special questions
 }
 
 // Random error messages
@@ -48,6 +49,7 @@ export default function PlayerGamePage() {
     const [showLeaderboard, setShowLeaderboard] = useState(false);
     const [rankings, setRankings] = useState<Player[]>([]);
     const [myRank, setMyRank] = useState<number>(0);
+    const [totalPlayers, setTotalPlayers] = useState<number>(0);
 
     // 🔒 Database-backed shuffle for anti-cheating
     const shuffleQuestion = async (questionIndex: number) => {
@@ -72,7 +74,8 @@ export default function PlayerGamePage() {
             correctAnswer: question.correctAnswer, // Keep original correct answer
             timeLimit: question.timeLimit,
             isSpecial: (question as any).isSpecial,
-            videoLink: (question as any).videoLink
+            videoLink: (question as any).videoLink,
+            imageUrl: (question as any).imageUrl
         };
     };
 
@@ -82,6 +85,12 @@ export default function PlayerGamePage() {
             if (!game) { router.push('/'); return; }
             setGameId(game.id);
             setCurrentQuestionIndex(game.current_question_index);
+
+            // Get total player count
+            const { data: players } = await supabase.from('players').select('id').eq('game_id', game.id);
+            if (players) {
+                setTotalPlayers(players.length);
+            }
 
             // Load shuffled question from database
             const shuffled = await shuffleQuestion(game.current_question_index);
@@ -125,6 +134,65 @@ export default function PlayerGamePage() {
         return () => clearInterval(timer);
     }, [currentQuestionIndex, hasAnswered, shuffledQuestion]);
 
+    // Monitor when all players have answered to show leaderboard
+    useEffect(() => {
+        if (!gameId || !hasAnswered || totalPlayers === 0) return;
+
+        const checkAllAnswered = async () => {
+            // Count answers for current question
+            const { data: answers, error } = await supabase
+                .from('answers')
+                .select('id')
+                .eq('game_id', gameId)
+                .eq('question_index', currentQuestionIndex);
+
+            if (error) {
+                console.error('Error checking answers:', error);
+                return;
+            }
+
+            // If all players have answered, fetch rankings and show leaderboard
+            if (answers && answers.length >= totalPlayers) {
+                const { data: players } = await supabase
+                    .from('players')
+                    .select('*')
+                    .eq('game_id', gameId)
+                    .order('score', { ascending: false });
+
+                if (players) {
+                    setRankings(players);
+                    const rank = players.findIndex(p => p.id === playerId) + 1;
+                    setMyRank(rank);
+                    setShowLeaderboard(true);
+                }
+            }
+        };
+
+        // Check immediately after answering
+        checkAllAnswered();
+
+        // Subscribe to answers table to detect when others answer
+        const channel = supabase
+            .channel(`answers-${gameId}-${currentQuestionIndex}`)
+            .on(
+                'postgres_changes',
+                {
+                    event: 'INSERT',
+                    schema: 'public',
+                    table: 'answers',
+                    filter: `game_id=eq.${gameId}`
+                },
+                () => {
+                    checkAllAnswered();
+                }
+            )
+            .subscribe();
+
+        return () => {
+            supabase.removeChannel(channel);
+        };
+    }, [gameId, hasAnswered, currentQuestionIndex, totalPlayers, playerId]);
+
     const handleTimeout = async () => {
         setHasAnswered(true);
         setIsCorrect(false);
@@ -161,7 +229,8 @@ export default function PlayerGamePage() {
             shuffledQuestion.correctAnswer
         );
 
-        const points = correct ? calculatePoints(timeTaken, 30) : 0;
+        // Special questions (like Matt Rife invitation) don't count for points
+        const points = (correct && !shuffledQuestion.isSpecial) ? calculatePoints(timeTaken, 30) : 0;
         setIsCorrect(correct);
         setPointsEarned(points);
         setIsTimeout(false);
@@ -182,28 +251,15 @@ export default function PlayerGamePage() {
             points_earned: points
         });
 
-        if (correct) {
+        if (correct && !shuffledQuestion.isSpecial) {
             await supabase.rpc('increment_score', {
                 player_id_param: playerId,
                 points_param: points
             });
         }
 
-        // Fetch current rankings and show leaderboard after a short delay
-        setTimeout(async () => {
-            const { data: players } = await supabase
-                .from('players')
-                .select('*')
-                .eq('game_id', gameId)
-                .order('score', { ascending: false });
-
-            if (players) {
-                setRankings(players);
-                const rank = players.findIndex(p => p.id === playerId) + 1;
-                setMyRank(rank);
-                setShowLeaderboard(true);
-            }
-        }, 1000); // Show leaderboard after 1 second
+        // Leaderboard will be shown when all players have answered
+        // This is handled by the realtime subscription in useEffect
     };
 
     if (!shuffledQuestion) return <div className="min-h-screen bg-[#F0FDF4] flex items-center justify-center">載入中...</div>;
@@ -235,7 +291,17 @@ export default function PlayerGamePage() {
             }`}>
                 {shuffledQuestion.isSpecial && (
                     <div className="text-center mb-4">
-                        <div className="text-6xl mb-2 animate-bounce-in">🎭</div>
+                        {shuffledQuestion.imageUrl ? (
+                            <div className="mb-2 animate-bounce-in">
+                                <img
+                                    src={shuffledQuestion.imageUrl}
+                                    alt="Special Guest"
+                                    className="w-32 h-32 rounded-full object-cover mx-auto shadow-lg border-4 border-[#E76F51]"
+                                />
+                            </div>
+                        ) : (
+                            <div className="text-6xl mb-2 animate-bounce-in">🎭</div>
+                        )}
                         <div className="text-sm font-bold text-[#E76F51] uppercase tracking-wider">特別邀請</div>
                     </div>
                 )}

@@ -48,7 +48,8 @@ export const sampleQuestions = [
         timeLimit: 60, // Give more time for this special question
         points: 0,
         isSpecial: true, // Mark as special question
-        videoLink: "https://www.youtube.com/watch?v=Matt-Rife-DC-Show" // Placeholder link
+        videoLink: "https://youtu.be/gvMtxJltUnM?si=g-nGxP2P0ipOiNOF",
+        imageUrl: "/mattrife.png" // Matt Rife image
     }
 ];
 

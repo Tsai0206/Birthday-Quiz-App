@@ -100,8 +100,8 @@ function PlayerJoinContent() {
                     {/* Step 1: Username */}
                     {step === 1 && (
                         <div className="flex flex-col h-full">
-                            <h2 className="text-3xl font-black text-[#264653] mb-2 text-center">取一個有趣好笑的名字吧</h2>
-                            <p className="text-gray-400 text-center mb-8">不夠好笑不給過</p>
+                            <h2 className="text-3xl font-black text-[#264653] mb-2 text-center">取一個有趣的名字</h2>
+                            <p className="text-gray-400 text-center mb-8">讓大家認識你吧</p>
 
                             <div className="flex-grow flex items-center justify-center">
                                 <input
