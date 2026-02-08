@@ -135,8 +135,8 @@ export default function HostResultsPage() {
                 className="absolute top-0 left-0 w-full h-full pointer-events-none"
             />
 
-            <div className="max-w-6xl mx-auto relative z-10" id="results-screenshot">
-                <h1 className="text-5xl md:text-6xl font-bold text-center text-white mb-12 drop-shadow-lg flex items-center justify-center gap-4">
+            <div className="max-w-6xl mx-auto relative z-10 pt-8" id="results-screenshot">
+                <h1 className="text-5xl md:text-6xl font-bold text-center text-white mb-12 drop-shadow-lg flex items-center justify-center gap-4 mt-4">
                     <span>🏆</span>
                     <span>最終結果</span>
                 </h1>

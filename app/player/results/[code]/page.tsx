@@ -133,8 +133,8 @@ export default function PlayerResultsPage() {
                 className="absolute top-0 left-0 w-full h-full pointer-events-none z-0"
             />
             {/* Curved Header Background (Purple from reference) */}
-            <div className="bg-[#5B21B6] pt-12 pb-24 px-6 rounded-b-[3rem] shadow-2xl relative z-10 text-center">
-                <h1 className="text-white text-lg font-bold opacity-80 mb-2">LEADERBOARD</h1>
+            <div className="bg-[#5B21B6] pt-20 pb-24 px-6 rounded-b-[3rem] shadow-2xl relative z-10 text-center">
+                <h1 className="text-white text-lg font-bold opacity-80 mb-3">LEADERBOARD</h1>
                 <div className="inline-block bg-[#8B5CF6] text-white px-6 py-1 rounded-full text-sm font-bold mb-6">All Time</div>
 
                 {/* Podium (Simplified for Mobile) */}

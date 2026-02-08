@@ -19,13 +19,13 @@ interface ShuffledQuestion {
     correctAnswer: number; // Original correct answer index
     timeLimit: number;
     isSpecial?: boolean; // Flag for special questions
-    videoLink?: string; // Optional video link for special questions
+    videoLinks?: string[]; // Optional video links for special questions
     imageUrl?: string; // Optional image for special questions
 }
 
 // Random error messages
 const getRandomErrorMessage = () => {
-    const messages = ["請加油...", "太不了解它了喔", "考倒你了吧", "Oops"];
+    const messages = ["請加油...", "太不了解他了喔", "考倒你了吧", "Oops"];
     return messages[Math.floor(Math.random() * messages.length)];
 };
 
@@ -74,7 +74,7 @@ export default function PlayerGamePage() {
             correctAnswer: question.correctAnswer, // Keep original correct answer
             timeLimit: question.timeLimit,
             isSpecial: (question as any).isSpecial,
-            videoLink: (question as any).videoLink,
+            videoLinks: (question as any).videoLinks,
             imageUrl: (question as any).imageUrl
         };
     };
@@ -122,6 +122,50 @@ export default function PlayerGamePage() {
         };
         setupGame();
     }, [roomCode, router, playerId]);
+
+    // 🔄 Page Visibility: Sync game state when player returns to the page
+    useEffect(() => {
+        const handleVisibilityChange = async () => {
+            if (document.visibilityState === 'visible' && gameId) {
+                // Player returned to the page - sync game state
+                const { data: game } = await supabase
+                    .from('games')
+                    .select('*')
+                    .eq('id', gameId)
+                    .single();
+
+                if (!game) return;
+
+                // Check if game is finished
+                if (game.status === 'finished') {
+                    router.push(`/player/results/${roomCode}?playerId=${playerId}`);
+                    return;
+                }
+
+                // Check if we're on a different question now
+                if (game.current_question_index !== currentQuestionIndex) {
+                    // Player missed some questions - sync to current question
+                    setCurrentQuestionIndex(game.current_question_index);
+                    const newShuffled = await shuffleQuestion(game.current_question_index);
+                    setShuffledQuestion(newShuffled);
+                    setTimeLeft(30);
+                    setSelectedAnswer(null);
+                    setHasAnswered(false);
+                    setIsCorrect(null);
+                    setPointsEarned(0);
+                    setIsTimeout(false);
+                    setErrorMessage('');
+                    setShowLeaderboard(false);
+                    setRankings([]);
+                }
+            }
+        };
+
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+        return () => {
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
+        };
+    }, [gameId, currentQuestionIndex, roomCode, playerId, router]);
 
     useEffect(() => {
         if (hasAnswered || !shuffledQuestion) return;
@@ -296,30 +340,35 @@ export default function PlayerGamePage() {
                                 <img
                                     src={shuffledQuestion.imageUrl}
                                     alt="Special Guest"
-                                    className="w-32 h-32 rounded-full object-cover mx-auto shadow-lg border-4 border-[#E76F51]"
+                                    className="w-48 h-48 rounded-full object-cover mx-auto shadow-lg border-4 border-[#E76F51]"
                                 />
                             </div>
                         ) : (
                             <div className="text-6xl mb-2 animate-bounce-in">🎭</div>
                         )}
-                        <div className="text-sm font-bold text-[#E76F51] uppercase tracking-wider">特別邀請</div>
+                        <div className="text-sm font-bold text-[#E76F51] uppercase tracking-wider">揪團</div>
                     </div>
                 )}
                 <h2 className="text-2xl font-black text-[#264653] text-center leading-relaxed mb-4">
                     {shuffledQuestion.question}
                 </h2>
-                {shuffledQuestion.isSpecial && shuffledQuestion.videoLink && (
+                {shuffledQuestion.isSpecial && shuffledQuestion.videoLinks && (
                     <div className="bg-[#F0FDF4] rounded-xl p-4 mt-4">
-                        <p className="text-sm text-gray-600 mb-2 text-center">📹 想先看看 Matt Rife 的表演？</p>
-                        <button
-                            onClick={() => {
-                                navigator.clipboard.writeText(shuffledQuestion.videoLink!);
-                                alert('連結已複製！請到瀏覽器貼上觀看 🎬');
-                            }}
-                            className="w-full bg-[#2A9D8F] text-white font-bold py-2 px-4 rounded-lg hover:bg-[#238276] transition-colors"
-                        >
-                            📋 複製影片連結
-                        </button>
+                        <p className="text-sm text-gray-600 mb-3 text-center font-bold">Some funny clips</p>
+                        <div className="space-y-2">
+                            {shuffledQuestion.videoLinks.map((link, index) => (
+                                <button
+                                    key={index}
+                                    onClick={() => {
+                                        navigator.clipboard.writeText(link);
+                                        alert(`影片${index + 1}連結已複製！請到瀏覽器貼上觀看 🎬`);
+                                    }}
+                                    className="w-full bg-[#2A9D8F] text-white font-bold py-2 px-4 rounded-lg hover:bg-[#238276] transition-colors"
+                                >
+                                    📋 影片{index + 1}
+                                </button>
+                            ))}
+                        </div>
                     </div>
                 )}
             </div>
@@ -370,7 +419,7 @@ export default function PlayerGamePage() {
                                 {isCorrect ? 'CORRECT' : isTimeout ? 'TIME OUT' : 'WRONG'}
                             </div>
                             <div className="text-2xl font-black">
-                                {isCorrect ? 'Excellent! 🎉' : isTimeout ? '你反應很慢耶 ⏰' : `${errorMessage} 😅`}
+                                {isCorrect ? '真棒!!! 🎉' : isTimeout ? '你反應很慢耶 ⏰' : `${errorMessage} 😅`}
                             </div>
                         </div>
                         {isCorrect && (
