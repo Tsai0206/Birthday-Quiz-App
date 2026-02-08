@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import type { Player } from '@/lib/supabase';
 import { sampleQuestions, shuffleArray, calculatePoints } from '@/lib/game-logic';
+import FlowGradientHeroSection from '@/components/ui/flow-gradient-hero-section';
 
 export default function HostGamePage() {
     const params = useParams();
@@ -182,26 +183,29 @@ export default function HostGamePage() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-4">
-            <div className="max-w-6xl mx-auto">
+        <div className="min-h-screen p-4 relative overflow-hidden">
+            {/* Liquid Gradient Background */}
+            <FlowGradientHeroSection />
+
+            <div className="max-w-6xl mx-auto relative z-10">
                 {/* Header */}
                 <div className="flex justify-between items-center mb-6">
-                    <div className="text-white">
-                        <span className="text-lg">題目 </span>
-                        <span className="text-3xl font-bold text-orange-400">{currentQuestionIndex + 1}</span>
-                        <span className="text-lg text-gray-400">/{totalQuestions}</span>
+                    <div className="text-[#264653]">
+                        <span className="text-lg font-semibold">題目 </span>
+                        <span className="text-3xl font-bold text-[#E76F51]">{currentQuestionIndex + 1}</span>
+                        <span className="text-lg text-gray-600">/{totalQuestions}</span>
                     </div>
-                    <div className={`text-6xl font-bold ${timeLeft <= 5 ? 'text-red-500 animate-pulse' : 'text-white'}`}>
+                    <div className={`text-6xl font-bold ${timeLeft <= 5 ? 'text-red-500 animate-pulse' : 'text-[#264653]'}`}>
                         {timeLeft}
                     </div>
-                    <div className="text-white">
-                        房間: <span className="text-orange-400 font-bold">{roomCode}</span>
+                    <div className="text-[#264653] font-semibold">
+                        房間: <span className="text-[#E76F51] font-bold">{roomCode}</span>
                     </div>
                 </div>
 
                 {/* Question */}
-                <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 mb-6 border border-white/20">
-                    <h2 className="text-3xl font-bold text-white text-center mb-8">
+                <div className="bg-white/80 backdrop-blur-lg rounded-2xl p-8 mb-6 border border-white/50 shadow-xl">
+                    <h2 className="text-3xl font-bold text-[#264653] text-center mb-8">
                         {currentQuestion?.question}
                     </h2>
 
@@ -211,8 +215,8 @@ export default function HostGamePage() {
                             <div
                                 key={index}
                                 className={`p-6 rounded-xl text-xl font-semibold text-center transition-all ${isShowingAnswer && index === currentQuestion.correctAnswer
-                                        ? 'bg-green-500 text-white ring-4 ring-green-300'
-                                        : 'bg-white/10 text-white border border-white/20'
+                                        ? 'bg-green-500 text-white ring-4 ring-green-300 shadow-lg'
+                                        : 'bg-white/60 text-[#264653] border border-gray-200 shadow-md'
                                     }`}
                             >
                                 {option}
@@ -224,8 +228,8 @@ export default function HostGamePage() {
                 {/* Player Status Grid */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {/* Answer Status */}
-                    <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20">
-                        <h3 className="text-xl font-bold text-white mb-4">
+                    <div className="bg-white/80 backdrop-blur-lg rounded-2xl p-6 border border-white/50 shadow-xl">
+                        <h3 className="text-xl font-bold text-[#264653] mb-4">
                             答題狀態 ({answeredPlayers.length}/{players.filter(p => !p.is_host).length})
                         </h3>
                         <div className="grid grid-cols-3 gap-2">
@@ -233,25 +237,25 @@ export default function HostGamePage() {
                                 <div
                                     key={player.id}
                                     className={`p-2 rounded-lg text-center transition-all ${answeredPlayers.includes(player.id)
-                                            ? 'bg-green-500/30 border border-green-500'
-                                            : 'bg-white/5 border border-white/10'
+                                            ? 'bg-green-500/30 border-2 border-green-500 shadow-md'
+                                            : 'bg-white/40 border border-gray-200'
                                         }`}
                                 >
                                     <div className="text-2xl">{player.avatar}</div>
-                                    <div className="text-white text-sm truncate">{player.username}</div>
+                                    <div className="text-[#264653] text-sm truncate font-semibold">{player.username}</div>
                                 </div>
                             ))}
                         </div>
                     </div>
 
                     {/* Leaderboard */}
-                    <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20">
-                        <h3 className="text-xl font-bold text-white mb-4">排行榜</h3>
+                    <div className="bg-white/80 backdrop-blur-lg rounded-2xl p-6 border border-white/50 shadow-xl">
+                        <h3 className="text-xl font-bold text-[#264653] mb-4">排行榜</h3>
                         <div className="space-y-2">
                             {players.slice(0, 5).map((player, index) => (
                                 <div
                                     key={player.id}
-                                    className="flex items-center gap-3 bg-white/5 rounded-lg p-2"
+                                    className="flex items-center gap-3 bg-white/60 rounded-lg p-2 border border-gray-100 shadow-sm"
                                 >
                                     <div className={`text-2xl ${index === 0 ? 'text-yellow-400' :
                                             index === 1 ? 'text-gray-300' :
@@ -260,8 +264,8 @@ export default function HostGamePage() {
                                         {index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}.`}
                                     </div>
                                     <div className="text-2xl">{player.avatar}</div>
-                                    <div className="flex-grow text-white truncate">{player.username}</div>
-                                    <div className="text-orange-400 font-bold">{player.score}</div>
+                                    <div className="flex-grow text-[#264653] truncate font-semibold">{player.username}</div>
+                                    <div className="text-[#E76F51] font-bold">{player.score}</div>
                                 </div>
                             ))}
                         </div>

@@ -4,6 +4,7 @@ import { Suspense, useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { avatarOptions } from '@/lib/game-logic';
+import FlowGradientHeroSection from '@/components/ui/flow-gradient-hero-section';
 
 function PlayerJoinContent() {
     const router = useRouter();
@@ -66,9 +67,12 @@ function PlayerJoinContent() {
     };
 
     return (
-        <div className="min-h-screen bg-[#F0FDF4] p-6 flex flex-col items-center">
+        <div className="min-h-screen p-6 flex flex-col items-center relative overflow-hidden">
+            {/* Liquid Gradient Background */}
+            <FlowGradientHeroSection />
+
             {/* Header / Progress */}
-            <div className="w-full max-w-md mt-6 mb-8">
+            <div className="w-full max-w-md mt-6 mb-8 relative z-10">
                 <div className="flex justify-between items-center mb-4 px-2">
                     <button
                         onClick={() => step > 1 && setStep(step - 1)}
@@ -94,8 +98,8 @@ function PlayerJoinContent() {
             </div>
 
             {/* Main Card */}
-            <div className="w-full max-w-md flex-grow flex flex-col">
-                <div className="card-modern p-8 flex-grow flex flex-col animate-slide-up">
+            <div className="w-full max-w-md flex-grow flex flex-col relative z-10">
+                <div className="card-modern p-8 flex-grow flex flex-col animate-slide-up bg-white/90 backdrop-blur-md">
 
                     {/* Step 1: Username */}
                     {step === 1 && (
@@ -195,8 +199,9 @@ function PlayerJoinContent() {
 export default function PlayerJoinPage() {
     return (
         <Suspense fallback={
-            <div className="min-h-screen bg-[#F0FDF4] flex items-center justify-center">
-                <div className="text-[#264653] text-xl font-bold">載入中...</div>
+            <div className="min-h-screen flex items-center justify-center relative">
+                <FlowGradientHeroSection />
+                <div className="text-[#264653] text-xl font-bold relative z-10">載入中...</div>
             </div>
         }>
             <PlayerJoinContent />

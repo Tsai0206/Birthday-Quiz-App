@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { generateRoomCode } from '@/lib/game-logic';
 import BackgroundMusic from '@/components/BackgroundMusic';
+import FlowGradientHeroSection from '@/components/ui/flow-gradient-hero-section';
 
 export default function Home() {
   const router = useRouter();
@@ -77,12 +78,11 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F0FDF4] flex flex-col relative overflow-hidden">
-      {/* Decorative Circles */}
-      <div className="absolute top-[-10%] right-[-10%] w-[50vh] h-[50vh] bg-[#2A9D8F]/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-[-10%] left-[-10%] w-[50vh] h-[50vh] bg-[#E9C46A]/10 rounded-full blur-3xl pointer-events-none" />
+    <div className="min-h-screen flex flex-col relative overflow-hidden">
+      {/* Liquid Gradient Background */}
+      <FlowGradientHeroSection />
 
-      <main className="flex-grow flex flex-col items-center justify-center p-6 relative z-10">
+      <main className="flex-grow flex flex-col items-center justify-center p-6 relative z-10 flex-1">
 
         {/* Logo/Hero Section */}
         <div className="text-center mb-12 animate-slide-up">

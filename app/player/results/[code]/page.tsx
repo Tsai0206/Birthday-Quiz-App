@@ -6,6 +6,7 @@ import { supabase } from '@/lib/supabase';
 import type { Player } from '@/lib/supabase';
 import Link from 'next/link';
 import { sampleQuestions } from '@/lib/game-logic';
+import FlowGradientHeroSection from '@/components/ui/flow-gradient-hero-section';
 
 export default function PlayerResultsPage() {
     const params = useParams();
@@ -124,52 +125,61 @@ export default function PlayerResultsPage() {
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    if (!currentPlayer) return <div className="min-h-screen bg-[#6D28D9] flex items-center justify-center text-white">載入中...</div>;
+    if (!currentPlayer) return (
+        <div className="min-h-screen flex items-center justify-center relative">
+            <FlowGradientHeroSection />
+            <div className="text-[#264653] text-xl font-bold relative z-10">載入中...</div>
+        </div>
+    );
 
     return (
-        <div className="min-h-screen bg-[#6D28D9] flex flex-col p-0 relative overflow-hidden">
+        <div className="min-h-screen flex flex-col p-0 relative overflow-hidden">
+            {/* Liquid Gradient Background */}
+            <FlowGradientHeroSection />
+
+            {/* Confetti Canvas */}
             <canvas
                 ref={canvasRef}
-                className="absolute top-0 left-0 w-full h-full pointer-events-none z-0"
+                className="absolute top-0 left-0 w-full h-full pointer-events-none z-10"
             />
-            {/* Curved Header Background (Purple from reference) */}
-            <div className="bg-[#5B21B6] pt-20 pb-24 px-6 rounded-b-[3rem] shadow-2xl relative z-10 text-center">
-                <h1 className="text-white text-lg font-bold opacity-80 mb-3">LEADERBOARD</h1>
-                <div className="inline-block bg-[#8B5CF6] text-white px-6 py-1 rounded-full text-sm font-bold mb-6">All Time</div>
+            {/* Curved Header Background */}
+            <div className="bg-white/80 backdrop-blur-lg pt-20 pb-24 px-6 rounded-b-[3rem] shadow-2xl relative z-20 text-center border-b-4 border-white/50">
+                <h1 className="text-[#264653] text-lg font-bold mb-3">LEADERBOARD</h1>
+                <div className="inline-block bg-[#E76F51] text-white px-6 py-1 rounded-full text-sm font-bold mb-6">All Time</div>
 
                 {/* Podium (Simplified for Mobile) */}
                 <div className="flex justify-center items-end gap-4 h-40 mb-[-4rem]">
                     {/* 2nd Place */}
                     {topPlayers[1] && (
                         <div className="flex flex-col items-center">
-                            <div className="w-16 h-16 bg-white rounded-full border-4 border-[#C4B5FD] flex items-center justify-center text-2xl mb-2 shadow-lg relative z-20">
+                            <div className="w-16 h-16 bg-white rounded-full border-4 border-gray-300 flex items-center justify-center text-2xl mb-2 shadow-lg relative z-30">
                                 {topPlayers[1].avatar}
-                                <div className="absolute -bottom-2 bg-[#8B5CF6] text-white text-xs px-2 rounded-full font-bold">2</div>
+                                <div className="absolute -bottom-2 bg-gray-400 text-white text-xs px-2 rounded-full font-bold">2</div>
                             </div>
-                            <div className="w-20 h-24 bg-[#7C3AED] rounded-t-xl opacity-80"></div>
+                            <div className="w-20 h-24 bg-gray-300/80 rounded-t-xl"></div>
                         </div>
                     )}
 
                     {/* 1st Place */}
                     {topPlayers[0] && (
-                        <div className="flex flex-col items-center z-20">
+                        <div className="flex flex-col items-center z-30">
                             <div className="text-4xl absolute -top-12 animate-bounce">👑</div>
                             <div className="w-24 h-24 bg-white rounded-full border-4 border-[#FBBF24] flex items-center justify-center text-4xl mb-2 shadow-xl relative">
                                 {topPlayers[0].avatar}
                                 <div className="absolute -bottom-3 bg-[#FBBF24] text-[#78350F] text-xs px-3 py-1 rounded-full font-bold">1</div>
                             </div>
-                            <div className="w-24 h-32 bg-[#6D28D9] rounded-t-xl shadow-[0_0_20px_rgba(0,0,0,0.3)] gradient-to-b from-[#7C3AED] to-[#5B21B6]"></div>
+                            <div className="w-24 h-32 bg-[#2A9D8F]/80 rounded-t-xl shadow-lg"></div>
                         </div>
                     )}
 
                     {/* 3rd Place */}
                     {topPlayers[2] && (
                         <div className="flex flex-col items-center">
-                            <div className="w-16 h-16 bg-white rounded-full border-4 border-[#FCD34D] flex items-center justify-center text-2xl mb-2 shadow-lg relative z-20">
+                            <div className="w-16 h-16 bg-white rounded-full border-4 border-[#FCD34D] flex items-center justify-center text-2xl mb-2 shadow-lg relative z-30">
                                 {topPlayers[2].avatar}
-                                <div className="absolute -bottom-2 bg-[#8B5CF6] text-white text-xs px-2 rounded-full font-bold">3</div>
+                                <div className="absolute -bottom-2 bg-amber-600 text-white text-xs px-2 rounded-full font-bold">3</div>
                             </div>
-                            <div className="w-20 h-16 bg-[#7C3AED] rounded-t-xl opacity-60"></div>
+                            <div className="w-20 h-16 bg-amber-600/60 rounded-t-xl"></div>
                         </div>
                     )}
                 </div>
@@ -184,7 +194,9 @@ export default function PlayerResultsPage() {
                         <div className="text-4xl">{currentPlayer.avatar}</div>
                         <div>
                             <div className="font-black text-[#1F2937] text-lg">{currentPlayer.username}</div>
-                            <div className="text-xs text-gray-400 font-bold uppercase">Your Rank</div>
+                            {currentPlayer.personal_quote && (
+                                <div className="text-xs text-gray-400 font-bold italic">"{currentPlayer.personal_quote}"</div>
+                            )}
                         </div>
                     </div>
                     <div className="text-[#E76F51] font-black text-2xl">

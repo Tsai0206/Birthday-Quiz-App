@@ -41,14 +41,14 @@ export default function BackgroundMusic() {
             />
             <button
                 onClick={togglePlay}
-                className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold p-3 rounded-full shadow-lg transition-all hover:scale-110"
+                className="bg-gradient-to-r from-[#2A9D8F] to-[#52B788] hover:from-[#248276] hover:to-[#42A678] text-white font-bold p-3 rounded-full shadow-lg transition-all hover:scale-110"
                 title={isPlaying ? 'Pause Music' : 'Play Music'}
             >
                 {isPlaying ? '⏸️' : '🎵'}
             </button>
             <button
                 onClick={toggleMute}
-                className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-bold p-3 rounded-full shadow-lg transition-all hover:scale-110"
+                className="bg-gradient-to-r from-[#E76F51] to-[#E9C46A] hover:from-[#D55F41] hover:to-[#D9B45A] text-white font-bold p-3 rounded-full shadow-lg transition-all hover:scale-110"
                 title={isMuted ? 'Unmute' : 'Mute'}
             >
                 {isMuted ? '🔇' : '🔊'}

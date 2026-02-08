@@ -11,6 +11,7 @@ import {
     applyShuffleToOptions,
     validateShuffledAnswer
 } from '@/lib/game-logic';
+import FlowGradientHeroSection from '@/components/ui/flow-gradient-hero-section';
 
 interface ShuffledQuestion {
     question: string;
@@ -323,12 +324,17 @@ export default function PlayerGamePage() {
         // This is handled by the realtime subscription in useEffect
     };
 
-    if (!shuffledQuestion) return <div className="min-h-screen bg-[#F0FDF4] flex items-center justify-center">載入中...</div>;
+    if (!shuffledQuestion) return (
+        <div className="min-h-screen flex items-center justify-center relative">
+            <FlowGradientHeroSection />
+            <div className="relative z-10">載入中...</div>
+        </div>
+    );
 
     return (
-        <div className="min-h-screen bg-[#52B788] flex flex-col p-6 relative overflow-hidden">
-            {/* Background Patterns */}
-            <div className="absolute top-[-20%] right-[-20%] w-[500px] h-[500px] bg-[#FFFFFF] opacity-10 rounded-full pointer-events-none"></div>
+        <div className="min-h-screen flex flex-col p-6 relative overflow-hidden">
+            {/* Liquid Gradient Background */}
+            <FlowGradientHeroSection />
 
             {/* Top Bar: Progress & Timer */}
             <div className="flex justify-between items-center mb-8 relative z-10">
