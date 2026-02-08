@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
+import type { Player } from '@/lib/supabase';
 import {
     sampleQuestions,
     calculatePoints,
@@ -17,6 +18,8 @@ interface ShuffledQuestion {
     shuffledIndices: number[]; // Renamed from originalIndexes for clarity
     correctAnswer: number; // Original correct answer index
     timeLimit: number;
+    isSpecial?: boolean; // Flag for special questions
+    videoLink?: string; // Optional video link for special questions
 }
 
 // Random error messages
@@ -42,6 +45,9 @@ export default function PlayerGamePage() {
     const [pointsEarned, setPointsEarned] = useState(0);
     const [isTimeout, setIsTimeout] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+    const [showLeaderboard, setShowLeaderboard] = useState(false);
+    const [rankings, setRankings] = useState<Player[]>([]);
+    const [myRank, setMyRank] = useState<number>(0);
 
     // 🔒 Database-backed shuffle for anti-cheating
     const shuffleQuestion = async (questionIndex: number) => {
@@ -64,7 +70,9 @@ export default function PlayerGamePage() {
             options: shuffledOptions,
             shuffledIndices: shuffledIndices, // Store for answer validation
             correctAnswer: question.correctAnswer, // Keep original correct answer
-            timeLimit: question.timeLimit
+            timeLimit: question.timeLimit,
+            isSpecial: (question as any).isSpecial,
+            videoLink: (question as any).videoLink
         };
     };
 
@@ -97,6 +105,8 @@ export default function PlayerGamePage() {
                         setPointsEarned(0);
                         setIsTimeout(false);
                         setErrorMessage('');
+                        setShowLeaderboard(false);
+                        setRankings([]);
                     }
                 }).subscribe();
             return () => { supabase.removeChannel(channel); };
@@ -178,6 +188,22 @@ export default function PlayerGamePage() {
                 points_param: points
             });
         }
+
+        // Fetch current rankings and show leaderboard after a short delay
+        setTimeout(async () => {
+            const { data: players } = await supabase
+                .from('players')
+                .select('*')
+                .eq('game_id', gameId)
+                .order('score', { ascending: false });
+
+            if (players) {
+                setRankings(players);
+                const rank = players.findIndex(p => p.id === playerId) + 1;
+                setMyRank(rank);
+                setShowLeaderboard(true);
+            }
+        }, 1000); // Show leaderboard after 1 second
     };
 
     if (!shuffledQuestion) return <div className="min-h-screen bg-[#F0FDF4] flex items-center justify-center">載入中...</div>;
@@ -204,10 +230,32 @@ export default function PlayerGamePage() {
             </div>
 
             {/* Question Card */}
-            <div className="bg-white rounded-[2rem] p-8 shadow-2xl mb-6 relative z-10 flex-shrink-0 animate-slide-up">
-                <h2 className="text-2xl font-black text-[#264653] text-center leading-relaxed">
+            <div className={`bg-white rounded-[2rem] p-8 shadow-2xl mb-6 relative z-10 flex-shrink-0 animate-slide-up ${
+                shuffledQuestion.isSpecial ? 'border-4 border-[#E76F51] bg-gradient-to-br from-white to-orange-50' : ''
+            }`}>
+                {shuffledQuestion.isSpecial && (
+                    <div className="text-center mb-4">
+                        <div className="text-6xl mb-2 animate-bounce-in">🎭</div>
+                        <div className="text-sm font-bold text-[#E76F51] uppercase tracking-wider">特別邀請</div>
+                    </div>
+                )}
+                <h2 className="text-2xl font-black text-[#264653] text-center leading-relaxed mb-4">
                     {shuffledQuestion.question}
                 </h2>
+                {shuffledQuestion.isSpecial && shuffledQuestion.videoLink && (
+                    <div className="bg-[#F0FDF4] rounded-xl p-4 mt-4">
+                        <p className="text-sm text-gray-600 mb-2 text-center">📹 想先看看 Matt Rife 的表演？</p>
+                        <button
+                            onClick={() => {
+                                navigator.clipboard.writeText(shuffledQuestion.videoLink!);
+                                alert('連結已複製！請到瀏覽器貼上觀看 🎬');
+                            }}
+                            className="w-full bg-[#2A9D8F] text-white font-bold py-2 px-4 rounded-lg hover:bg-[#238276] transition-colors"
+                        >
+                            📋 複製影片連結
+                        </button>
+                    </div>
+                )}
             </div>
 
             {/* Options Grid */}
@@ -269,6 +317,72 @@ export default function PlayerGamePage() {
                                 0 pts
                             </div>
                         )}
+                    </div>
+                </div>
+            )}
+
+            {/* Animated Leaderboard Overlay */}
+            {showLeaderboard && (
+                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-30 flex items-center justify-center p-6 animate-fade-in">
+                    <div className="bg-white rounded-3xl p-6 w-full max-w-md shadow-2xl animate-flip-in">
+                        {/* Header with Status Message */}
+                        <div className="text-center mb-6">
+                            <div className="text-4xl mb-2">
+                                {myRank === 1 ? '👑' : myRank === 2 ? '🥈' : myRank === 3 ? '🥉' : '🎯'}
+                            </div>
+                            <h3 className="text-2xl font-black text-[#264653] mb-1">
+                                {myRank === 1 ? '穩穩領先！' :
+                                 myRank === 2 ? '緊追在後！' :
+                                 myRank === 3 ? '保持勢頭！' :
+                                 myRank <= 5 ? '繼續努力！' : '加油！'}
+                            </h3>
+                            <p className="text-gray-500 text-sm">
+                                你目前排名第 <span className="font-bold text-[#E76F51]">{myRank}</span> 位
+                            </p>
+                        </div>
+
+                        {/* Top 5 Rankings */}
+                        <div className="space-y-2 mb-4">
+                            {rankings.slice(0, 5).map((player, index) => {
+                                const isMe = player.id === playerId;
+                                const rank = index + 1;
+                                return (
+                                    <div
+                                        key={player.id}
+                                        className={`flex items-center gap-3 p-3 rounded-xl transition-all animate-slide-in ${
+                                            isMe ? 'bg-[#E76F51]/10 border-2 border-[#E76F51] scale-105' : 'bg-gray-50'
+                                        }`}
+                                        style={{ animationDelay: `${index * 0.1}s` }}
+                                    >
+                                        <div className={`text-lg font-black w-8 ${
+                                            rank === 1 ? 'text-yellow-500' :
+                                            rank === 2 ? 'text-gray-400' :
+                                            rank === 3 ? 'text-amber-600' : 'text-gray-400'
+                                        }`}>
+                                            #{rank}
+                                        </div>
+                                        <div className="text-2xl">{player.avatar}</div>
+                                        <div className="flex-grow">
+                                            <div className={`font-bold ${isMe ? 'text-[#E76F51]' : 'text-[#264653]'}`}>
+                                                {player.username}
+                                                {isMe && <span className="ml-2 text-xs">（你）</span>}
+                                            </div>
+                                        </div>
+                                        <div className="text-[#2A9D8F] font-bold text-lg">
+                                            {player.score}
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+
+                        {/* Close Button */}
+                        <button
+                            onClick={() => setShowLeaderboard(false)}
+                            className="w-full bg-gradient-to-r from-[#2A9D8F] to-[#52B788] text-white font-bold py-3 rounded-xl hover:scale-105 transition-transform"
+                        >
+                            繼續 →
+                        </button>
                     </div>
                 </div>
             )}

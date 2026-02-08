@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useParams, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import type { Player } from '@/lib/supabase';
@@ -22,6 +22,7 @@ export default function PlayerResultsPage() {
         totalQuestions: number;
         avgTime: number;
     }>({ correctAnswers: 0, totalQuestions: sampleQuestions.length, avgTime: 0 });
+    const canvasRef = useRef<HTMLCanvasElement>(null);
 
     useEffect(() => {
         const fetchResult = async () => {
@@ -61,10 +62,76 @@ export default function PlayerResultsPage() {
         fetchResult();
     }, [roomCode, playerId]);
 
+    // Confetti Effect
+    useEffect(() => {
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const particles: any[] = [];
+        const colors = ['#F472B6', '#34D399', '#60A5FA', '#FBBF24', '#A78BFA'];
+
+        for (let i = 0; i < 150; i++) {
+            particles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height - canvas.height,
+                vx: Math.random() * 4 - 2,
+                vy: Math.random() * 4 + 2,
+                color: colors[Math.floor(Math.random() * colors.length)],
+                size: Math.random() * 10 + 5,
+                rotation: Math.random() * 360,
+                rotationSpeed: Math.random() * 10 - 5
+            });
+        }
+
+        const animate = () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            particles.forEach((p, i) => {
+                p.y += p.vy;
+                p.x += p.vx;
+                p.rotation += p.rotationSpeed;
+
+                if (p.y > canvas.height) {
+                    p.y = -20;
+                    p.x = Math.random() * canvas.width;
+                }
+
+                ctx.save();
+                ctx.translate(p.x, p.y);
+                ctx.rotate((p.rotation * Math.PI) / 180);
+                ctx.fillStyle = p.color;
+                ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+                ctx.restore();
+            });
+
+            requestAnimationFrame(animate);
+        };
+
+        animate();
+
+        const handleResize = () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        };
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
     if (!currentPlayer) return <div className="min-h-screen bg-[#6D28D9] flex items-center justify-center text-white">載入中...</div>;
 
     return (
         <div className="min-h-screen bg-[#6D28D9] flex flex-col p-0 relative overflow-hidden">
+            <canvas
+                ref={canvasRef}
+                className="absolute top-0 left-0 w-full h-full pointer-events-none z-0"
+            />
             {/* Curved Header Background (Purple from reference) */}
             <div className="bg-[#5B21B6] pt-12 pb-24 px-6 rounded-b-[3rem] shadow-2xl relative z-10 text-center">
                 <h1 className="text-white text-lg font-bold opacity-80 mb-2">LEADERBOARD</h1>

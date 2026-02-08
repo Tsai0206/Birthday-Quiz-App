@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import type { Player } from '@/lib/supabase';
+import Matter from 'matter-js';
 
 export default function PlayerLobbyPage() {
     const params = useParams();
@@ -14,6 +15,7 @@ export default function PlayerLobbyPage() {
 
     const [players, setPlayers] = useState<Player[]>([]);
     const [currentPlayer, setCurrentPlayer] = useState<Player | null>(null);
+    const canvasRef = useRef<HTMLCanvasElement>(null);
 
     useEffect(() => {
         const setupLobby = async () => {
@@ -93,6 +95,118 @@ export default function PlayerLobbyPage() {
         setupLobby();
     }, [roomCode, playerId, router]);
 
+    // Matter.js Physics Simulation for Interactive Avatars
+    useEffect(() => {
+        if (!canvasRef.current || players.length === 0) return;
+
+        const canvas = canvasRef.current;
+        const width = canvas.clientWidth;
+        const height = canvas.clientHeight;
+        canvas.width = width;
+        canvas.height = height;
+
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+
+        const { Engine, Bodies, Composite, Runner, MouseConstraint, Mouse, Events } = Matter;
+
+        // Create engine
+        const engine = Engine.create({
+            gravity: { x: 0, y: 0.3 } // Gentle downward gravity
+        });
+
+        // Create walls (invisible boundaries)
+        const wallOptions = { isStatic: true };
+        const walls = [
+            Bodies.rectangle(width / 2, -25, width, 50, wallOptions), // top
+            Bodies.rectangle(width / 2, height + 25, width, 50, wallOptions), // bottom
+            Bodies.rectangle(-25, height / 2, 50, height, wallOptions), // left
+            Bodies.rectangle(width + 25, height / 2, 50, height, wallOptions) // right
+        ];
+
+        // Create avatar circles with player data
+        const bodies = new Map<string, { body: Matter.Body; player: Player }>();
+        players.forEach((player, index) => {
+            const x = 50 + Math.random() * (width - 100);
+            const y = 50 + Math.random() * 100;
+            const circle = Bodies.circle(x, y, 30, {
+                restitution: 0.8, // Bounciness
+                friction: 0.01,
+                frictionAir: 0.01
+            });
+            bodies.set(player.id, { body: circle, player });
+        });
+
+        // Add everything to the world
+        Composite.add(engine.world, [...walls, ...Array.from(bodies.values()).map(b => b.body)]);
+
+        // Add mouse control for drag interaction
+        const mouse = Mouse.create(canvas);
+        const mouseConstraint = MouseConstraint.create(engine, {
+            mouse: mouse,
+            constraint: {
+                stiffness: 0.2
+            }
+        });
+        Composite.add(engine.world, mouseConstraint);
+
+        // Run the engine
+        const runner = Runner.create();
+        Runner.run(runner, engine);
+
+        // Custom render loop
+        const render = () => {
+            ctx.clearRect(0, 0, width, height);
+
+            // Draw each avatar
+            bodies.forEach(({ body, player }, playerId) => {
+                const { x, y } = body.position;
+
+                // Draw circle background
+                ctx.beginPath();
+                ctx.arc(x, y, 30, 0, Math.PI * 2);
+                ctx.fillStyle = '#FFFFFF';
+                ctx.fill();
+                ctx.strokeStyle = playerId === currentPlayer?.id ? '#E76F51' : '#2A9D8F';
+                ctx.lineWidth = 3;
+                ctx.stroke();
+
+                // Draw emoji
+                ctx.font = '32px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillStyle = '#000000';
+                ctx.fillText(player.avatar, x, y);
+            });
+
+            requestAnimationFrame(render);
+        };
+        render();
+
+        // Add gentle random forces to keep things moving
+        const addRandomForces = () => {
+            bodies.forEach(({ body }) => {
+                if (Math.random() > 0.98) {
+                    const force = {
+                        x: (Math.random() - 0.5) * 0.001,
+                        y: (Math.random() - 0.5) * 0.001
+                    };
+                    Matter.Body.applyForce(body, body.position, force);
+                }
+            });
+        };
+
+        Events.on(engine, 'beforeUpdate', addRandomForces);
+
+        // Cleanup
+        return () => {
+            Events.off(engine, 'beforeUpdate', addRandomForces);
+            Runner.stop(runner);
+            Composite.clear(engine.world, false);
+            Engine.clear(engine);
+        };
+    }, [players, currentPlayer]);
+
     if (!currentPlayer) return <div className="min-h-screen bg-[#F0FDF4] flex items-center justify-center">載入中...</div>;
 
     return (
@@ -132,18 +246,16 @@ export default function PlayerLobbyPage() {
                     目前有 <span className="text-[#E76F51] font-bold text-xl">{players.length}</span> 位玩家準備好了
                 </p>
 
-                {/* Players Grid (Mini) */}
-                <div className="w-full max-w-sm bg-white/50 backdrop-blur-sm rounded-3xl p-6 border border-white">
-                    <p className="text-left text-sm font-bold text-gray-400 mb-4 px-2">RECENT JOINED</p>
-                    <div className="flex flex-wrap gap-3">
-                        {players.map(p => (
-                            <div key={p.id} className="flex flex-col items-center animate-bounce-in">
-                                <div className="w-12 h-12 bg-white rounded-full shadow-sm flex items-center justify-center text-xl border border-gray-100">
-                                    {p.avatar}
-                                </div>
-                                <span className="text-xs text-gray-500 mt-1 max-w-[4rem] truncate">{p.username}</span>
-                            </div>
-                        ))}
+                {/* Interactive Physics Playground */}
+                <div className="w-full max-w-sm bg-white/50 backdrop-blur-sm rounded-3xl p-4 border border-white relative overflow-hidden">
+                    <p className="text-left text-sm font-bold text-gray-400 mb-2 px-2">互動頭像區 (可以拖動喔！)</p>
+                    <div className="relative w-full h-64">
+                        {/* Matter.js Canvas with Emoji Rendering */}
+                        <canvas
+                            ref={canvasRef}
+                            className="w-full h-full rounded-2xl"
+                            style={{ touchAction: 'none' }}
+                        />
                     </div>
                 </div>
             </div>

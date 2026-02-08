@@ -39,6 +39,16 @@ export const sampleQuestions = [
         correctAnswer: 1,
         timeLimit: 30,
         points: 0
+    },
+    {
+        id: 6,
+        question: "🎭 特別邀請！3/1 想一起去 DC 看 Matt Rife 的演出嗎？",
+        options: ["是", "否", "看看影片再決定"],
+        correctAnswer: 0, // "是" is the correct answer
+        timeLimit: 60, // Give more time for this special question
+        points: 0,
+        isSpecial: true, // Mark as special question
+        videoLink: "https://www.youtube.com/watch?v=Matt-Rife-DC-Show" // Placeholder link
     }
 ];
 
